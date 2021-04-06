@@ -1,0 +1,46 @@
+{
+    "StackName": "ecr-setup",
+    "Capabilities": [
+    ],
+    "TimeoutInMinutes": 5,
+    "EnableTerminationProtection": true,
+    "Parameters" : [
+        {
+            "ParameterKey": "ReaderAccountList",
+            "ParameterValue": "arn:aws:iam::027326493842:root"
+        }
+    ],
+    "Tags": [
+            {
+                "Key": "org",
+                "Value": "applications"
+            },
+            {
+                "Key": "project",
+                "Value": "cloud.frickjack.com"
+            },
+            {
+                "Key": "stack",
+                "Value": "reuben"
+            },
+            {
+                "Key": "stage",
+                "Value": "dev"
+            },
+            {
+              "Key": "role",
+              "Value": "dev"
+            }
+    ],
+    "Littleware": {
+        "TemplatePath": "lib/cloudformation/cellSetup/ecr/ecr.json",
+        "Variables": {
+            "ecrRepoList": [
+                {
+                    "resourceName": "littleSessionMgr",
+                    "repoName": "little/session_mgr"
+                }
+            ]
+        }
+    }
+}

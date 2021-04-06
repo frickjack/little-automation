@@ -2,67 +2,6 @@
 
 source "${LITTLE_HOME}/lib/bash/utils.sh"
 
-
-# constants -----------------------
-
-
-accountList=(
-053927701465
-199578515826
-222487244010
-236714345101
-258867494168
-302170346065
-345060017512
-446046036926
-454671780472
-474789003679
-504226487987
-562749638216
-584476192960
-636151780898
-662843554732
-663707118480
-728066667777
-813684607867
-830067555646
-895962626746
-980870151884
-)
-
-principalStr=""
-for it in "${accountList[@]}"; do
-  principalStr="${principalStr},\"arn:aws:iam::${it}:root\""
-done
-
-policy="$(cat - <<EOM
-{
-    "Version": "2008-10-17",
-    "Statement": [
-        {
-            "Sid": "AllowCrossAccountPull",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": [ ${principalStr#,} ]
-            },
-            "Action": [
-               "ecr:GetAuthorizationToken",
-               "ecr:BatchCheckLayerAvailability",
-               "ecr:GetDownloadUrlForLayer",
-               "ecr:BatchGetImage"
-            ]
-        }
-    ]
-}
-EOM
-)";
-
-if ! jq -r . <<< "$policy" > /dev/null; then
-  gen3_log_err "failed validating ecr repo policy: $policy"
-  exit 1
-fi
-
-
 # lib -------------------------------
 
 gen3_ecr_login() {
@@ -81,7 +20,9 @@ gen3_ecr_login() {
 # List the `gen3/` repository names (in the current account)
 #
 gen3_ecr_repolist() {
-  aws ecr describe-repositories | jq -r '.repositories[] | .repositoryName'
+  local registry
+  registry="$(gen3_ecr_registry)" || return 1
+  aws ecr describe-repositories | jq -r --arg registry "$registry" '.repositories[] | $registry + "/" + .repositoryName'
 }
 
 
@@ -92,9 +33,19 @@ gen3_ecr_registry() {
   region="$(aws configure get region)" || return 1
   accountId="$(aws sts get-caller-identity | jq -e -r .Account)" || return 1
 
-  local ecrReg="707767160287.dkr.ecr.${region}.amazonaws.com"
+  local ecrReg="${accountId}.dkr.ecr.${region}.amazonaws.com"
 
   echo "$ecrReg"
+}
+
+gen3_ecr_scanreport() {
+  local repo="$1"
+  shift || return 1
+  local tag="$1"
+  shift || return 1
+  local reg="$(gen3_ecr_registry)"
+  repo="${repo#reg}"
+  aws ecr describe-image-scan-findings --repository-name "$repo" --image-id "imageTag=$tag"
 }
 
 # main -----------------------
@@ -107,14 +58,14 @@ if [[ -z "$GEN3_SOURCE_ONLY" ]]; then
     "list")
       gen3_ecr_repolist "$@"
       ;;
-    "quaylogin")
-      gen3_quay_login "$@"
-      ;;
     "login")
       gen3_ecr_login "$@"
       ;;
     "registry")
       gen3_ecr_registry "$@"
+      ;;
+    "scanreport")
+      gen3_ecr_scanreport "$@"
       ;;
     *)
       little help ecr

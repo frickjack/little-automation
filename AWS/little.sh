@@ -147,7 +147,7 @@ littleRun() {
         expiration="$(date "-d$expiration" '+%s')"
       fi
       now="$(date '+%s')"
-      if [[ "$expiration" -lt "$((now  + 300))" ]]; then
+      if [[ "$expiration" -lt "$((now  + 900))" ]]; then
         /bin/rm "$cacheFile"
       fi
     fi

@@ -29,3 +29,12 @@ Ex:
 ```
 little ecr list
 ```
+
+### scanreport
+
+Get the image-scan report for the given image
+
+```
+little ecr scanreport little/session_mgr latest
+```
+

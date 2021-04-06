@@ -16,11 +16,13 @@ export XDG_DATA_HOME=${XDG_DATA_HOME:-"${WORKSPACE}/.local/share"}
 # Jenkins special cases
 USER="${USER:-unknown}"
 if [[ -n "$JENKINS_HOME" && -n "$WORKSPACE" && -d "$WORKSPACE" ]]; then
-  XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-"${WORKSPACE}/tmp/gen3-$USER"}
+  XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-"${WORKSPACE}/tmp/little-$USER"}
 else
-  XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-"/tmp/gen3-$USER"}
+  XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-"/tmp/little-$USER"}
 fi
 export XDG_RUNTIME_DIR
+
+export LITTLE_CACHE_DIR="${XDG_DATA_HOME}/little/cache"
 
 CURRENT_SHELL="$(echo $SHELL | awk -F'/' '{print $NF}')"
 
@@ -119,7 +121,7 @@ green_color() {
 if [[ -z "${GEN3_SOURCED_SCRIPTS_GUARD}" ]]; then
   declare -a GEN3_SOURCED_SCRIPTS
   # be careful with associative arrays and zsh support
-  GEN3_SOURCED_SCRIPTS=("/gen3/lib/utils")
+  GEN3_SOURCED_SCRIPTS=("/lib/bash/utils")
   GEN3_SOURCED_SCRIPTS_GUARD="loaded"
 fi
 
@@ -217,7 +219,7 @@ function gen3_time_since() {
     gen3_log_err "gen3_time_since got $operation $verb $periodSecs"
     return 1
   fi
-  flagFolder="${GEN3_CACHE_DIR}/flagFiles"
+  flagFolder="${LITTLE_CACHE_DIR}/flagFiles"
   if [[ ! -d "$flagFolder" ]]; then
     mkdir -m 0700 -p "$flagFolder"
   fi
