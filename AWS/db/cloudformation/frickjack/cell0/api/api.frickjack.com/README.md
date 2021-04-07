@@ -1,6 +1,6 @@
 # TL;DR
 
-Parameterize and deploy the littleware api stack under the api.frickjack.com domain - see the [tempalte README](../../../../../../lib/cloudformation/cellSetup/api/README.md) for details.
+Parameterize and deploy the littleware api stack under the api.frickjack.com domain - see the [tempalte README](../../../../../../lib/cloudformation/cloud/api/README.md) for details.
 
 ## Overview
 

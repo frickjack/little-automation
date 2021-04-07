@@ -57,6 +57,6 @@
         }
     ],
     "Littleware": {
-        "TemplatePath": "lib/cloudformation/tenantSetup/cognito.json"
+        "TemplatePath": "lib/cloudformation/cloud/cognito/cognito.json"
     }
 }

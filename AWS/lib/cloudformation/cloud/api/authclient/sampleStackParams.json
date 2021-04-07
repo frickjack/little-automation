@@ -65,7 +65,7 @@
             }
     ],
     "Littleware": {
-        "TemplatePath": "lib/cloudformation/cellSetup/apiGateway.json",
+        "TemplatePath": "lib/cloudformation/cloud/apiGateway.json",
         "Variables": {
             "lambdaVersions": [
                 {

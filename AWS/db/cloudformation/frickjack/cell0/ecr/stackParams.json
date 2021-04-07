@@ -33,7 +33,7 @@
             }
     ],
     "Littleware": {
-        "TemplatePath": "lib/cloudformation/cellSetup/ecr/ecr.json",
+        "TemplatePath": "lib/cloudformation/cloud/ecr/ecr.json",
         "Variables": {
             "ecrRepoList": [
                 {
