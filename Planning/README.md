@@ -12,6 +12,8 @@ Idea - non-technical product mockup/process first (ex - markdown files in folder
 
 ### Projects
 
+Roadmap with tasks (stories), milestones, and deliverables.
+
 ### Stories
 
 ## Deliverables
