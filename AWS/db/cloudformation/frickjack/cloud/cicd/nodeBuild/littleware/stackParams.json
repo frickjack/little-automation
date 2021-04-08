@@ -1,0 +1,47 @@
+{
+    "StackName": "build-littleware",
+    "Capabilities": [
+        "CAPABILITY_NAMED_IAM"
+    ],
+    "TimeoutInMinutes": 10,
+    "EnableTerminationProtection": true,
+    "Parameters" : [
+        {
+            "ParameterKey": "ProjectName",
+            "ParameterValue": "cicd-littleware"
+        },
+        {
+            "ParameterKey": "ServiceRole",
+            "ParameterValue": "arn:aws:iam::027326493842:role/littleCodeBuild"
+        },
+        {
+            "ParameterKey": "GithubRepo",
+            "ParameterValue": "https://github.com/frickjack/littleware.git"
+        }
+    ],
+    "Tags": [
+            {
+                "Key": "org",
+                "Value": "applications"
+            },
+            {
+                "Key": "project",
+                "Value": "cicd-littleware"
+            },
+            {
+                "Key": "stack",
+                "Value": "frickjack.com"
+            },
+            {
+                "Key": "stage",
+                "Value": "dev"
+            },
+            {
+              "Key": "role",
+              "Value": "build"
+            }
+    ],
+    "Littleware": {
+        "TemplatePath": "lib/cloudformation/cicd/nodeBuild.json"
+    }
+}
