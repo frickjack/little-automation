@@ -49,7 +49,8 @@
           },
           "ManagedPolicyArns": [
             "arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess",
-            "arn:aws:iam::aws:policy/AWSWAFConsoleReadOnlyAccess"
+            "arn:aws:iam::aws:policy/AWSWAFConsoleReadOnlyAccess",
+            "arn:aws:iam::aws:policy/AWSCloudShellFullAccess"
           ],
           "MaxSessionDuration" : 3600,
           "Path" : "/littleware/account/user/",
@@ -70,7 +71,8 @@
             } ]
           },
           "ManagedPolicyArns": [
-            "arn:aws:iam::aws:policy/AWSWAFConsoleReadOnlyAccess"
+            "arn:aws:iam::aws:policy/AWSWAFConsoleReadOnlyAccess",
+            "arn:aws:iam::aws:policy/AWSCloudShellFullAccess"
           ],
           "MaxSessionDuration" : 3600,
           "Path" : "/littleware/account/user/",
@@ -93,7 +95,8 @@
           "ManagedPolicyArns": [
               "arn:aws:iam::aws:policy/AWSCloudTrailFullAccess",
               "arn:aws:iam::aws:policy/IAMFullAccess",
-              "arn:aws:iam::aws:policy/AWSWAFConsoleReadOnlyAccess"
+              "arn:aws:iam::aws:policy/AWSWAFConsoleReadOnlyAccess",
+              "arn:aws:iam::aws:policy/AWSCloudShellFullAccess"
           ],
           "MaxSessionDuration" : 3600,
           "Path" : "/littleware/account/user/",
