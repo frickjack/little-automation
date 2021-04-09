@@ -1,7 +1,25 @@
 # TL;DR
 
 Some basic information on our tagged releases.
-Note - `git log tag1..tag2` shows the commit log between versions.
+Note - `git log tag1...tag2` shows the commit log between versions.
+
+## Version 1.2.1
+
+### Features
+
+* ecr cloudformation and helper tool
+* little avro helper
+
+### Improvements
+
+* codebuild to standard5 build image - supports nodejs14
+* codebuild buildspec uses AWS_REGION environment variable
+
+### Fixes
+
+* various
+
+### Notes
 
 ## Version 1.2.0
 
@@ -11,6 +29,7 @@ Note - `git log tag1..tag2` shows the commit log between versions.
 * introduce SSM parameter helpers as a free alternative to AWS secrets manager
 * little s3gzcp local remote
 * little markdown
+* devTest docs
 
 ### Improvements
 

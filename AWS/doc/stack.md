@@ -129,7 +129,7 @@ little stack filter-template path/to/template [$variablesStr]
 
 Filter a template with variables extracted from a littleware stack json:
 ```
-little stack filter-template "$LITTLE_HOME/AWS/lib/cloudformation/cellSetup/apiGateway.json" "$(little stack variables "$LITTLE_HOME/AWS/lib/cloudformation/cellSetup/sampleStackParams.json")"
+little stack filter-template "$LITTLE_HOME/AWS/lib/cloudformation/cloud/apiGateway.json" "$(little stack variables "$LITTLE_HOME/AWS/lib/cloudformation/cloud/sampleStackParams.json")"
 ```
 
 ### resources

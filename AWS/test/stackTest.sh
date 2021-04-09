@@ -33,7 +33,7 @@ testStackFilter() {
 }
 
 testStackVariables() {
-  local testPath="$LITTLE_HOME/lib/cloudformation/cellSetup/sampleStackParams.json"
+  local testPath="$LITTLE_HOME/lib/cloudformation/cloud/sampleStackParams.json"
   local varData
   varData="$(little stack variables)" && jq -r . <<< "$varData" > /dev/null;
     because $? "default stack variables look ok"

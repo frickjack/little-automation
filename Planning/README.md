@@ -12,8 +12,14 @@ Idea - non-technical product mockup/process first (ex - markdown files in folder
 
 ### Projects
 
+Roadmap with tasks (stories), milestones, and deliverables.
+
 ### Stories
 
 ## Deliverables
 
 * Standard: API design, UX design, documentation, testing, monitoring, SLO, bLog
+
+## References
+
+* Oxide computer [RFD](https://oxide.computer/blog/rfd-1-requests-for-discussion/)

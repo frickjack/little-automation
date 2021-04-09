@@ -12,11 +12,13 @@ Nothing here yet.
 
 * [Hydrating a new AWS Account](./Notes/explanation/accountHydrate.md)
 * [Littleware and API Gateway](./Notes/explanation/apiGateway.md)
-* [CICD with CodeBuild](./Notes/codeBuildCICD.md)
+* [CICD with CodeBuild](./Notes/explanation/codeBuildCICD.md)
+* [ECR setup](./Notes/explanation/ecrSetup.md)
 
 ### [how-tos](./Notes/howto)
 
 * [WIP - Contributing to Littleware](./Notes/howto/littleContribute.md)
+* [dev-test](./Notes/howto/devTest.md)
 
 ### [reference](./Notes/reference)
 

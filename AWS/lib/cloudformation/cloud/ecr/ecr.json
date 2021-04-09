@@ -1,0 +1,53 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "ReaderAccountList": {
+      "Type": "CommaDelimitedList",
+      "Description": "comma separated list of account-ids to grant access to these ecr repos"
+    }
+  },
+  "Resources": {
+
+    {% for item in stackVariables.ecrRepoList %}
+      "{{ item.resourceName }}": {
+        "Type" : "AWS::ECR::Repository",
+        "Properties" : {
+            "ImageScanningConfiguration" : {
+              "scanOnPush": true
+            },
+            "ImageTagMutability" : "MUTABLE",
+            "LifecyclePolicy" : {
+              "LifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"description\":\"age out git dev tags\",\"selection\":{\"tagStatus\":\"tagged\",\"tagPrefixList\":[\"gitsha_\",\"gitbranch_\",\"gitpr_\"],\"countType\":\"sinceImagePushed\",\"countUnit\":\"days\",\"countNumber\":7},\"action\":{\"type\":\"expire\"}},{\"rulePriority\":2,\"description\":\"age out untagged images\",\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"imageCountMoreThan\",\"countNumber\":5},\"action\":{\"type\":\"expire\"}}]}"
+            },
+            "RepositoryName" : "{{ item.repoName }}",
+            "RepositoryPolicyText" : {
+              "Version": "2008-10-17",
+              "Statement": [
+                  {
+                      "Sid": "AllowCrossAccountPull",
+                      "Effect": "Allow",
+                      "Principal": {
+                          "AWS": { "Ref": "ReaderAccountList" }
+                      },
+                      "Action": [
+                         "ecr:GetAuthorizationToken",
+                         "ecr:BatchCheckLayerAvailability",
+                         "ecr:GetDownloadUrlForLayer",
+                         "ecr:BatchGetImage"
+                      ]
+                  }
+              ]
+            },
+            "Tags": [
+              { "Key": "Name", "Value": "{{ item.repoName }}" },
+              {{ stackTagsStr }}
+            ]
+        }
+      }
+      {% if not loop.last %} , {% endif %}
+    {% endfor %}
+  },
+
+  "Outputs": {
+  }
+}
