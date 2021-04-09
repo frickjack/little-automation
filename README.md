@@ -18,6 +18,7 @@ Nothing here yet.
 ### [how-tos](./Notes/howto)
 
 * [WIP - Contributing to Littleware](./Notes/howto/littleContribute.md)
+* [dev-test](./Notes/howto/devTest.md)
 
 ### [reference](./Notes/reference)
 
