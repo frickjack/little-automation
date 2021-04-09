@@ -112,7 +112,7 @@ lambdaFunctionName() {
 
 
 lambdaDockerRun() {
-    docker run --rm -v "$PWD":/var/task lambci/lambda:nodejs12.x "$@"
+    docker run --rm -v "$PWD":/var/task lambci/lambda:nodejs14.x "$@"
 }
 
 #
@@ -247,7 +247,7 @@ lambdaUpdateLayer() {
             "S3Key": "${bundle#s3://*/}"
         },
         "CompatibleRuntimes": [
-            "nodejs12.x"
+            "nodejs14.x"
         ],
         "LicenseInfo": "ISC"
     }
