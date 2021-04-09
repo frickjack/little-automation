@@ -13,8 +13,6 @@ a few optimizations we can make when setting up a repository.
 
 ## Overview
 
-### Docker Workflow and IAM
-
 We should consider the workflow around the creation and use of our Docker images to decide who we should allow to create a new ECR repository, and who should push images to ECR.  In a typical docker
 workflow a developer publishes a Dockerfile alongside her code,
 and a continuous integration (CI) process kicks in to build and 
@@ -36,9 +34,9 @@ to grant full ECR access in our developer account
 Next we developed a [cloudformation template](https://github.com/frickjack/misc-stuff/blob/dev/AWS/lib/cloudformation/cloud/ecr/ecr.json) for creating ECR repositories in our dev account.
 Our template extends the standard cloudformation syntax with
 [nunjucks](https://mozilla.github.io/nunjucks/) tags supported
-by our [little stack](https://github.com/frickjack/misc-stuff/blob/dev/AWS/doc/stack.md) tools.
+by our [little stack](https://github.com/frickjack/misc-stuff/blob/dev/AWS/doc/stack.md) tools.  We also developed a [little ecr](https://github.com/frickjack/misc-stuff/blob/dev/AWS/doc/ecr.md) tool to simplify some common tasks.
 
-There are a couple things in the cloudformation repository definition to notice.  First, each repository has a resource policy that allows our production AWS accounts to pull images from ECR repositories in our dev accounts:
+There are a few things to notice in the cloudformation template.  First, each repository has an IAM resource policy that allows our production AWS accounts to pull images from ECR repositories in our dev accounts:
 
 ```
 "RepositoryPolicyText" : {
@@ -102,6 +100,10 @@ because ECR storage costs [ten cents per GByte/month](https://aws.amazon.com/ecr
 }
 ```
 
+Finally, we configure ECR to scan our images for known security vulnerabilities on push.
+Our [little ecr scanreport](https://github.com/frickjack/misc-stuff/blob/dev/AWS/doc/ecr.md) tool retrieves an image's scan-results from the command line.  The workflow that tags an image for production should include a step that verifies that the image is free from vulnerabilities more severe
+than whatever policy we want to enforce.
+
 ## Summary
 
 Although we use ECR like any other docker registry, there are
@@ -109,6 +111,4 @@ a few optimizations we can make when setting up a repository.
 First, we update our IAM policies to give users and CICD pipelines
 the access they need to support our development and deployment processes.
 Next, we add resource policies to our ECR repositories to allow
-production accounts to pull docker images from repositories in developer accounts.
-Finally, we attach lifecycle rules to each repository to avoid the expense
-of storing unused images.
+production accounts to pull docker images from repositories in developer accounts.  Third, we attach lifecycle rules to each repository to avoid the expense of storing unused images.  Finally, we enable image scanning on push, and check an image's vulnerability report before tagging it for production use.
