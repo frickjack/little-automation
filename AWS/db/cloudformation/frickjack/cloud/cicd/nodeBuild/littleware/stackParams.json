@@ -7,6 +7,10 @@
     "EnableTerminationProtection": true,
     "Parameters" : [
         {
+            "ParameterKey": "PrivilegedMode",
+            "ParameterValue": "true"
+        },
+        {
             "ParameterKey": "ProjectName",
             "ParameterValue": "cicd-littleware"
         },
