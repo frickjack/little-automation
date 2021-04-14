@@ -1,3 +1,19 @@
+{#
+
+# TL;DR
+
+Root nunjucks modules for cloud level API gateway - 
+https://api.cloud
+
+* authn API stages (lambda backed) OIDC API client
+* sessionMgr API stages issues JWT session tokens
+
+See https://blog.frickjack.com/2020/07/little-tools-for-api-gateway.html
+
+#}
+
+{% import "./authnApiStage.js.njk" as authnApi with context %}
+
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Parameters": {
@@ -20,178 +36,17 @@
       "Default" : "prod",
       "AllowedValues": [ "prod", "pre-prod", "qa", "dev" ]
     },
-    "LambdaBucket": {
-      "Type": "String",
-      "Description": "bucket of s3 with lambda package",
-      "Default": "{{ stackBucket }}",
-      "ConstraintDescription": "must be a valid s3 bucket"
-    },
-    "LambdaKey": {
-      "Type": "String",
-      "Description": "key of s3 path to lambda package",
-      "Default": "lambda/@littleware/reuben-gateway/littleware_reuben-gateway-1_0_0-dev/bundle-20201216_204556.zip",
-      "ConstraintDescription": "must be a valid s3 object key"
-    },
-    "LambdaRole": {
-      "Type": "String",
-      "Description": "arn of IAM role for lambda execution to assume",
-      "ConstraintDescription": "IAM role arn"
-    },
-    "LambdaConfig": {
-      "Type": "AWS::SSM::Parameter::Value<String>"
-    },
     "GatewayRole": {
       "Type": "String",
       "Description": "arn of IAM role for gateway to assume",
       "ConstraintDescription": "IAM role arn"
-    }
+    },
+    {{ authnApi.parameters }}
   },
+
+
   "Resources": {
-    "apiLambda": {
-      "Type" : "AWS::Lambda::Function",
-      "Properties" : {
-        "Code" : {
-          "S3Bucket" : { "Ref": "LambdaBucket" },
-          "S3Key" : { "Ref": "LambdaKey" }
-        },
-        "Description" : "authn functions",
-        "Environment" : {
-          "Variables": { 
-            "LittleMessage": "hello",
-            "LITTLE_AUTHN_CONFIG": "{ \"type\": \"env\", \"value\": \"LITTLE_LAMBDA_CONFIG\" }",
-            "LITTLE_LAMBDA_CONFIG": {"Ref": "LambdaConfig"}
-          }
-        },
-        "FunctionName" : { "Fn::Join": [ "-", ["authclient", "{{ stackParameters.DomainName | replace(".", "-") }}",  { "Ref": "StackName" }, { "Ref": "StageName" }, "authn"]] },
-        "Handler" : "index.lambdaHandler",
-        "MemorySize" : 256,
-        "Role" : { "Ref": "LambdaRole" },
-        "Runtime" : "nodejs14.x",
-        "Tags": [
-          {{ stackTagsStr }}
-        ],
-        "Timeout" : 3,
-        "TracingConfig" : {
-          "Mode": "Active"
-        }
-      }
-    },
-
-    {% for item in stackVariables.lambdaVersions %}
-      "{{ item.resourceName }}": {
-        "Type" : "AWS::Lambda::Version",
-        "Properties" : {
-            "FunctionName" : { "Ref": "apiLambda" },
-            "Description": "{{ item.description }}"
-          }
-      },
-    {% endfor %}
-
-    "prodLambdaAlias": {
-      "Type" : "AWS::Lambda::Alias",
-      "Properties" : {
-          "Description" : "prod stage lambda alias",
-          "FunctionName" : { "Ref": "apiLambda" },
-          "FunctionVersion" : { "Fn::GetAtt": ["{{ stackVariables.prodLambdaVersion }}", "Version"] },
-          "Name" : "gateway_prod"
-        }
-    },
-
-    "betaPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "Action": "lambda:invokeFunction",
-        "FunctionName": {"Fn::GetAtt": ["apiLambda", "Arn"]},
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {"Fn::Join": ["", 
-          ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "apiGateway"}, "/*"]
-        ]}
-      }
-    },
-
-    "prodPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "Action": "lambda:invokeFunction",
-        "FunctionName": {"Ref": "prodLambdaAlias"},
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {"Fn::Join": ["", 
-          ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "apiGateway"}, "/*"]
-        ]}
-      }
-    },
-
-    "apiGateway": {
-      "Type" : "AWS::ApiGateway::RestApi",
-      "Properties" : {
-          "Description" : "simple call-through to lambda api",
-          "EndpointConfiguration" : {
-            "Types": ["EDGE"]
-          },
-          "MinimumCompressionSize" : 128,
-          "Name" : { "Fn::Join": [ "-", ["apiclient_frickjack_com", { "Ref": "StackName" }, { "Ref": "StageName" }]] },
-          "Body": {{ templateFiles.openapi }},
-          "Tags": [
-            {{ stackTagsStr }}
-          ]
-        }
-    },
-
-    {% for item in stackVariables.gatewayDeployments %}
-      "{{ item.resourceName }}": {
-        "Type": "AWS::ApiGateway::Deployment",
-        "Properties": {
-          "RestApiId": {"Ref": "apiGateway"},
-          "Description": "{{ item.description }}",
-          "StageName": "DummyStage"
-        }
-      },
-    {% endfor %}
-
-    "prodStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "Properties": {
-        "DeploymentId": { "Ref": "{{ stackVariables.prodDeployment }}" },
-        "MethodSettings": [{
-          "DataTraceEnabled": true,
-          "HttpMethod": "*",
-          "LoggingLevel": "INFO",
-          "ResourcePath": "/*"
-        }],
-        "RestApiId": {"Ref": "apiGateway"},
-        "StageName": "prod",
-        "Variables": {
-          "functionName": {"Fn::Join": [":", [
-              {"Ref": "apiLambda"},
-              "gateway_prod"
-          ]]}
-        },
-        "Tags": [
-          {{ stackTagsStr }}
-        ]
-      }
-    },
-
-    "betaStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "Properties": {
-        "DeploymentId": { "Ref": "{{ stackVariables.betaDeployment }}" },
-        "MethodSettings": [{
-          "DataTraceEnabled": true,
-          "HttpMethod": "*",
-          "LoggingLevel": "INFO",
-          "ResourcePath": "/*"
-        }],
-        "RestApiId": {"Ref": "apiGateway"},
-        "StageName": "beta",
-        "Variables": {
-          "functionName": {"Ref": "apiLambda"}
-        },
-        "Tags": [
-          {{ stackTagsStr }}
-        ]
-      }
-    },
+    {{ authnApi.resources }},
 
     "prodDomainName": {
       "Type" : "AWS::ApiGateway::DomainName",
@@ -243,11 +98,6 @@
   },
 
   "Outputs": {
-    "RootUrl": {
-      "Description": "Root URL of the API gateway",
-      "Value": {"Fn::Join": ["",
-        ["https://", {"Ref": "apiGateway"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com"]
-      ]}
-    }
+    {{ authnApi.outputs }}
   }
 }

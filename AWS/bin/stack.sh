@@ -397,7 +397,10 @@ filterTemplate() {
         filterVariables="$1"
         shift
     fi
-    if ! templateStr="$(little filter "$filterVariables" < "$templatePath")"; then
+    local templateFolder
+    templateFolder="$(dirname "$templatePath")" || return 1
+    # cd to folder to support nunjucks import/include statements
+    if ! templateStr="$(cd "$templateFolder" && little filter "$filterVariables" < "$templatePath")"; then
       gen3_log_err "Template filter failed: $templatePath"
       return 1
     fi
