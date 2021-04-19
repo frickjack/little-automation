@@ -13,6 +13,7 @@ See https://blog.frickjack.com/2020/07/little-tools-for-api-gateway.html
 #}
 
 {% import "./authnApiStage.js.njk" as authnApi with context %}
+{% import "./sessionMgrApiStage.js.njk" as sessmgr with context %}
 
 {
   "AWSTemplateFormatVersion": "2010-09-09",
@@ -36,17 +37,12 @@ See https://blog.frickjack.com/2020/07/little-tools-for-api-gateway.html
       "Default" : "prod",
       "AllowedValues": [ "prod", "pre-prod", "qa", "dev" ]
     },
-    "GatewayRole": {
-      "Type": "String",
-      "Description": "arn of IAM role for gateway to assume",
-      "ConstraintDescription": "IAM role arn"
-    },
     {{ authnApi.parameters }}
   },
 
-
   "Resources": {
     {{ authnApi.resources }},
+    {{ sessmgr.resources }},
 
     "prodDomainName": {
       "Type" : "AWS::ApiGateway::DomainName",
@@ -98,6 +94,7 @@ See https://blog.frickjack.com/2020/07/little-tools-for-api-gateway.html
   },
 
   "Outputs": {
-    {{ authnApi.outputs }}
+    {{ authnApi.outputs }},
+    {{ sessmgr.outputs }}
   }
 }

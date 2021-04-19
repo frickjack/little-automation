@@ -253,7 +253,7 @@
           "CORS"
         ],
         "summary": "CORS support",
-        "description": "Enable CORS by returning correct headers\n",
+        "description": "Enable CORS by returning correct headers",
         "responses": {
           "200": {
             "description": "CORS headers if applicable",

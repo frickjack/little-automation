@@ -90,7 +90,7 @@ associated with the OIDC authentication client API
       }
     },
 
-    {% for item in stackVariables.lambdaVersions %}
+    {% for item in stackVariables.authnapi.lambdaVersions %}
       "{{ item.resourceName }}": {
         "Type" : "AWS::Lambda::Version",
         "Properties" : {
@@ -105,7 +105,7 @@ associated with the OIDC authentication client API
       "Properties" : {
           "Description" : "prod stage lambda alias",
           "FunctionName" : { "Ref": "apiLambda" },
-          "FunctionVersion" : { "Fn::GetAtt": ["{{ stackVariables.prodLambdaVersion }}", "Version"] },
+          "FunctionVersion" : { "Fn::GetAtt": ["{{ stackVariables.authnapi.prodLambdaVersion }}", "Version"] },
           "Name" : "gateway_prod"
         }
     },
@@ -150,7 +150,7 @@ associated with the OIDC authentication client API
         }
     },
 
-    {% for item in stackVariables.gatewayDeployments %}
+    {% for item in stackVariables.authnapi.gatewayDeployments %}
       "{{ item.resourceName }}": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
@@ -164,7 +164,7 @@ associated with the OIDC authentication client API
     "prodStage": {
       "Type": "AWS::ApiGateway::Stage",
       "Properties": {
-        "DeploymentId": { "Ref": "{{ stackVariables.prodDeployment }}" },
+        "DeploymentId": { "Ref": "{{ stackVariables.authnapi.prodDeployment }}" },
         "MethodSettings": [{
           "DataTraceEnabled": true,
           "HttpMethod": "*",
@@ -188,7 +188,7 @@ associated with the OIDC authentication client API
     "betaStage": {
       "Type": "AWS::ApiGateway::Stage",
       "Properties": {
-        "DeploymentId": { "Ref": "{{ stackVariables.betaDeployment }}" },
+        "DeploymentId": { "Ref": "{{ stackVariables.authnapi.betaDeployment }}" },
         "MethodSettings": [{
           "DataTraceEnabled": true,
           "HttpMethod": "*",

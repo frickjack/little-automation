@@ -1,6 +1,7 @@
 {
     "StackName": "little-frickjack-gateway-authclient",
     "Capabilities": [
+        "CAPABILITY_NAMED_IAM"
     ],
     "TimeoutInMinutes": 5,
     "EnableTerminationProtection": true,
@@ -24,10 +25,6 @@
         {
             "ParameterKey": "LambdaRole",
             "ParameterValue": "arn:aws:iam::027326493842:role/littleware/account/service/littleLamda"
-        },
-        {
-            "ParameterKey": "GatewayRole",
-            "ParameterValue": "arn:aws:iam::027326493842:role/littleGateway"
         },
         { 
             "ParameterKey": "LambdaConfig",
@@ -59,33 +56,58 @@
     "Littleware": {
         "TemplatePath": "lib/cloudformation/cloud/api/authclient/apiGateway.json",
         "Variables": {
+            "authnapi": {
+                "lambdaVersions": [
+                    {
+                        "resourceName": "lambdaVer20200523r0",
+                        "description": "initial prod version"
+                    },
+                    {
+                        "resourceName": "lambdaD001000003D20200618r0",
+                        "description": "little-authn 1.0.3"
+                    },
+                    {
+                        "resourceName": "lambda20201205r0",
+                        "description": "little-authn 1.0.4"
+                    },
+                    {
+                        "resourceName": "lambda20201216r0",
+                        "description": "little-authn 1.0.5"
+                    }
+                ],
+                "prodLambdaVersion": "lambda20201216r0",
+                "gatewayDeployments": [
+                    {
+                        "resourceName": "deploy20200523r0",
+                        "description": "initial deployment"
+                    }
+                ],
+                "prodDeployment": "deploy20200523r0",
+                "betaDeployment": "deploy20200523r0"
+            }
+        },
+        "sessmgr": {
+            "kmsKeys": [
+                "sessmgr20210416"
+            ],
+            "kmsSigningKey": "sessmgr20210416",
+            "kmsOldKey": "sessmgr20210416",
+            "lambdaImage": "027326493842.dkr.ecr.us-east-2.amazonaws.com/little/session_mgr:2.6.1",
             "lambdaVersions": [
                 {
-                    "resourceName": "lambdaVer20200523r0",
+                    "resourceName": "sessmgr20210416v2.6.1",
                     "description": "initial prod version"
-                },
-                {
-                    "resourceName": "lambdaD001000003D20200618r0",
-                    "description": "little-authn 1.0.3"
-                },
-                {
-                    "resourceName": "lambda20201205r0",
-                    "description": "little-authn 1.0.4"
-                },
-                {
-                    "resourceName": "lambda20201216r0",
-                    "description": "little-authn 1.0.5"
                 }
             ],
+            "prodLambdaVersion": "sessmgr20210416v2.6.1",
             "gatewayDeployments": [
                 {
-                    "resourceName": "deploy20200523r0",
+                    "resourceName": "deploy20210416r0",
                     "description": "initial deployment"
                 }
             ],
-            "prodLambdaVersion": "lambda20201216r0",
-            "prodDeployment": "deploy20200523r0",
-            "betaDeployment": "deploy20200523r0"
+            "prodDeployment": "deploy20210416r0",
+            "betaDeployment": "deploy20210416r0"
         }
     }
 }

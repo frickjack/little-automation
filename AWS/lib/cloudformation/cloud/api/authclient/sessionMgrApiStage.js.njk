@@ -1,0 +1,284 @@
+{#
+
+# TL;DR 
+
+Cloudformation nunjucks module for resources
+associated with the session manager API
+
+#}
+
+{% set parameters %}
+{% endset %}
+
+{% set resources %}
+    {#
+       Support KMS key rotation.
+       Add a new key when it's time to rotate, and
+       move the key alias there. 
+    #}
+    {% for keyName in stackVariables.sessmgr.kmsKeys %}
+    "{{ keyName }}": {
+      "Type" : "AWS::KMS::Key",
+      "Properties" : {
+          "Description" : "assymetric kms key for session mgr jwt signing and validation",
+          "KeyPolicy" : {
+            "Sid": "Enable IAM User Permissions",
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": {"Fn::Join": ["", 
+                 ["arn:aws:iam::", {"Ref": "AWS::AccountId"}, ":root"]
+                ]}
+            },
+            "Action": "kms:*",
+            "Resource": "*"
+          },
+          "KeySpec" : "ECC_NIST_P256",
+          "KeyUsage" : "SIGN_VERIFY",
+          "PendingWindowInDays" : 7,
+          "Tags": [
+            { "Key": "Name", "Value": "{{ keyName }}" },
+            {{ stackTagsStr }}
+          ]
+        }
+    },
+    {% endfor %}
+ 
+    {% set kmsSigningAlias %}{{ "alias/littleware/api/" + (stackParameters.DomainName | replace(".", "-")) + "/sessMgrSigningKey" }}{% endset %}
+
+    {# old signing key - rotated out #}
+    {% set kmsOldAlias %}{{ "alias/littleware/api/" + (stackParameters.DomainName | replace(".", "-")) + "/sessMgrOldKey" }}{% endset %}
+
+    "kmsSigningKey": {
+      "Type" : "AWS::KMS::Alias",
+      "Properties" : {
+          "AliasName" : "{{ kmsSigningAlias }}",
+          "TargetKeyId" : { "Ref": "{{ stackVariables.sessmgr.kmsSigningKey }}" }
+        }
+    },
+    "kmsOldKey": {
+      "Type" : "AWS::KMS::Alias",
+      "Properties" : {
+          "AliasName" : "{{ kmsOldAlias }}",
+          "TargetKeyId" : { "Ref": "{{ stackVariables.sessmgr.kmsOldKey }}" }
+        }
+    },
+
+    "sessMgrKmsPolicy": {
+      "Type" : "AWS::IAM::ManagedPolicy",
+      "Properties" : {
+        "Description" : "sign and verify with session manager keys",
+        "ManagedPolicyName" : "sessMgrKmsPolicy",
+        "Path" : "{{ "littleware/api/" + stackParameters.DomainName }}",
+        "PolicyDocument" : {
+          "Version": "2012-10-17",
+          "Statement": {
+            "Effect": "Allow",
+            "Action": [
+              "kms:Sign",
+              "kms:Verify"
+            ],
+            "Resource": [
+              {% for keyName in stackVariables.sessmgr.kmsKeys %}
+                {"Fn::Join": ["",
+                  ["arn:aws:kms:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":key/", { "Ref": "{{ keyName }}" } ]
+                ]}
+                {% if not loop.last %} , {% endif %}
+              {% endfor %}
+            ]
+          }
+        }
+      }
+    },
+
+    "sessMgrRole": {
+      "Type" : "AWS::IAM::Role",
+      "Properties" : {
+          "AssumeRolePolicyDocument": {
+            "Version" : "2012-10-17",
+            "Statement": [ {
+                "Effect": "Allow",
+                "Principal": {
+                  "Service": [ "lambda.amazonaws.com" ]
+                },
+                "Action": [ "sts:AssumeRole" ]
+              }
+            ]
+          },
+          "ManagedPolicyArns": [
+              "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess",
+              { "Ref": "sessMgrKmsPolicy" }
+          ],
+          "Policies": [
+          ],
+          "MaxSessionDuration" : 3600,
+          "Path" : "{{ "littleware/api/" + stackParameters.DomainName }}",
+          "RoleName" : "sessionMgrLamda"
+        }
+    },
+
+    "sessMgrLambda": {
+      "Type" : "AWS::Lambda::Function",
+      "Properties" : {
+        "PackageType": "Image",
+        "Code" : {
+          "ImageUri": "{{ stackVariables.sessmgr.lambdaImage }}"
+        },
+        "Description" : "session manager API lambda",
+        "Environment" : {
+          "Variables": { 
+            "LITTLE_SESSMGR_CONFIG": {{
+              { 
+                "type": "env", 
+                "value": "LITTLE_LAMBDA_CONFIG" 
+              } | dump | dump
+            }},
+            "LITTLE_LAMBDA_CONFIG": {{
+              {
+                  kms: {
+                     kmsSigningAlias: kmsSigningAlias,
+                     kmsOldAlias: kmsOldAlias
+                  } 
+              } | dump | dump
+            }}
+          }
+        },
+        "FunctionName" : { "Fn::Join": [ "-", ["sessmgr", "{{ stackParameters.DomainName | replace(".", "-") }}",  { "Ref": "StackName" }, { "Ref": "StageName" }, "prod"]] },
+        "MemorySize" : 256,
+        "Role" : { "Ref": "sessMgrRole" },
+        "Tags": [
+          {{ stackTagsStr }}
+        ],
+        "Timeout" : 5,
+        "TracingConfig" : {
+          "Mode": "Active"
+        }
+      }
+    },
+
+    {% for item in stackVariables.sessmgr.lambdaVersions %}
+      "{{ item.resourceName }}": {
+        "Type" : "AWS::Lambda::Version",
+        "Properties" : {
+            "FunctionName" : { "Ref": "sessMgrLambda" },
+            "Description": "{{ item.description }}"
+          }
+      },
+    {% endfor %}
+
+    "sessMgrLambdaAlias": {
+      "Type" : "AWS::Lambda::Alias",
+      "Properties" : {
+          "Description" : "prod stage lambda alias",
+          "FunctionName" : { "Ref": "sessMgrLambda" },
+          "FunctionVersion" : { "Fn::GetAtt": ["{{ stackVariables.sessmgr.prodLambdaVersion }}", "Version"] },
+          {# TODO - add canary support ... #}
+          "Name" : "gateway_prod"
+        }
+    },
+
+    "sessMgrBetaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:invokeFunction",
+        "FunctionName": {"Fn::GetAtt": ["sessMgrLambda", "Arn"]},
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {"Fn::Join": ["", 
+          ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "sessMgrApi"}, "/*"]
+        ]}
+      }
+    },
+
+    "sessMgrProdPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:invokeFunction",
+        "FunctionName": {"Ref": "prodLambdaAlias"},
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {"Fn::Join": ["", 
+          ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "sessMgrApi"}, "/*"]
+        ]}
+      }
+    },
+
+    "sessMgrApi": {
+      "Type" : "AWS::ApiGateway::RestApi",
+      "Properties" : {
+          "Description" : "simple call-through to session mgr api",
+          "EndpointConfiguration" : {
+            "Types": ["EDGE"]
+          },
+          "MinimumCompressionSize" : 128,
+          "Name" : { "Fn::Join": [ "-", ["sessmgr_api", { "Ref": "StackName" }, { "Ref": "StageName" }]] },
+          "Body": {% include "./sessionMgrOpenApi.json" %},
+          "Tags": [
+            {{ stackTagsStr }}
+          ]
+        }
+    },
+
+    {% for item in stackVariables.sessmgr.gatewayDeployments %}
+      "{{ item.resourceName }}": {
+        "Type": "AWS::ApiGateway::Deployment",
+        "Properties": {
+          "RestApiId": {"Ref": "sessMgrApi"},
+          "Description": "{{ item.description }}",
+          "StageName": "SessMgrDummyStage"
+        }
+      },
+    {% endfor %}
+
+    "sessMgrProdStage": {
+      "Type": "AWS::ApiGateway::Stage",
+      "Properties": {
+        "DeploymentId": { "Ref": "{{ stackVariables.sessmgr.prodDeployment }}" },
+        "MethodSettings": [{
+          "DataTraceEnabled": true,
+          "HttpMethod": "*",
+          "LoggingLevel": "INFO",
+          "ResourcePath": "/*"
+        }],
+        "RestApiId": {"Ref": "sessMgrApi"},
+        "StageName": "prodSessMgr",
+        "Variables": {
+          "functionName": {"Fn::Join": [":", [
+              {"Ref": "sessMgrLambda"},
+              "gateway_prod"
+          ]]}
+        },
+        "Tags": [
+          {{ stackTagsStr }}
+        ]
+      }
+    },
+
+    "sessMgrBetaStage": {
+      "Type": "AWS::ApiGateway::Stage",
+      "Properties": {
+        "DeploymentId": { "Ref": "{{ stackVariables.sessmgr.betaDeployment }}" },
+        "MethodSettings": [{
+          "DataTraceEnabled": true,
+          "HttpMethod": "*",
+          "LoggingLevel": "INFO",
+          "ResourcePath": "/*"
+        }],
+        "RestApiId": {"Ref": "sessMgrApi"},
+        "StageName": "betaSessMgr",
+        "Variables": {
+          "functionName": {"Ref": "sessMgrLambda"}
+        },
+        "Tags": [
+          {{ stackTagsStr }}
+        ]
+      }
+    }
+{% endset %}
+
+{% set outputs %}
+    "SessMgrExecuteUrl": {
+      "Description": "URL to execute against an authn API stage",
+      "Value": {"Fn::Join": ["",
+        ["https://", {"Ref": "sessMgrApi"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/STAGENAME-beta_or_prodSessMgr"]
+      ]}
+    }
+{% endset %}
