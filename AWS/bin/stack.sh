@@ -180,7 +180,7 @@ apply() {
     filteredTemplate="$(mktemp "${XDG_RUNTIME_DIR}/templateFilter_XXXXXX")"
     local stackVariables
     stackVariables="$(getStackVariables "$stackPath")" || return 1
-    filterTemplate "$templatePath" "$stackVariables" | tee "$filteredTemplate" 1>&2
+    filterTemplate "$templatePath" "$stackVariables" | jq -c . | tee "$filteredTemplate" 1>&2
     if ! aws cloudformation validate-template --template-body "$(cat "$filteredTemplate")" > /dev/null; then
         gen3_log_err "template validation failed after filter"
         return 1

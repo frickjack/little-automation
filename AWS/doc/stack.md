@@ -47,6 +47,9 @@ Describe an existing stack
 
 ```
 little stack describe path/to/stackParams.json
+
+little stack describe path/to/stackParams.json | jq -r '.Stacks[] | .Outputs'
+
 ```
 
 ### make-change
