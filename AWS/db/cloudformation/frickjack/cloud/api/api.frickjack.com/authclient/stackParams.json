@@ -84,30 +84,30 @@
                 ],
                 "prodDeployment": "deploy20200523r0",
                 "betaDeployment": "deploy20200523r0"
+            },
+            "sessmgr": {
+                "kmsKeys": [
+                    "sessmgr20210416"
+                ],
+                "kmsSigningKey": "sessmgr20210416",
+                "kmsOldKey": "sessmgr20210416",
+                "lambdaImage": "027326493842.dkr.ecr.us-east-2.amazonaws.com/little/session_mgr:2.6.1",
+                "lambdaVersions": [
+                    {
+                        "resourceName": "sessmgr20210416v2m6p1",
+                        "description": "initial prod version"
+                    }
+                ],
+                "prodLambdaVersion": "sessmgr20210416v2m6p1",
+                "gatewayDeployments": [
+                    {
+                        "resourceName": "deploy20210416r0",
+                        "description": "initial deployment"
+                    }
+                ],
+                "prodDeployment": "deploy20210416r0",
+                "betaDeployment": "deploy20210416r0"
             }
-        },
-        "sessmgr": {
-            "kmsKeys": [
-                "sessmgr20210416"
-            ],
-            "kmsSigningKey": "sessmgr20210416",
-            "kmsOldKey": "sessmgr20210416",
-            "lambdaImage": "027326493842.dkr.ecr.us-east-2.amazonaws.com/little/session_mgr:2.6.1",
-            "lambdaVersions": [
-                {
-                    "resourceName": "sessmgr20210416v2.6.1",
-                    "description": "initial prod version"
-                }
-            ],
-            "prodLambdaVersion": "sessmgr20210416v2.6.1",
-            "gatewayDeployments": [
-                {
-                    "resourceName": "deploy20210416r0",
-                    "description": "initial deployment"
-                }
-            ],
-            "prodDeployment": "deploy20210416r0",
-            "betaDeployment": "deploy20210416r0"
         }
     }
 }

@@ -22,15 +22,21 @@ associated with the session manager API
       "Properties" : {
           "Description" : "assymetric kms key for session mgr jwt signing and validation",
           "KeyPolicy" : {
-            "Sid": "Enable IAM User Permissions",
-            "Effect": "Allow",
-            "Principal": {
-              "AWS": {"Fn::Join": ["", 
-                 ["arn:aws:iam::", {"Ref": "AWS::AccountId"}, ":root"]
-                ]}
-            },
-            "Action": "kms:*",
-            "Resource": "*"
+              "Id": "key-consolepolicy-3",
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                    "Sid": "Enable IAM User Permissions",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "AWS": {"Fn::Join": ["", 
+                        ["arn:aws:iam::", {"Ref": "AWS::AccountId"}, ":root"]
+                        ]}
+                    },
+                    "Action": "kms:*",
+                    "Resource": "*"
+                  }
+              ]
           },
           "KeySpec" : "ECC_NIST_P256",
           "KeyUsage" : "SIGN_VERIFY",
@@ -68,7 +74,7 @@ associated with the session manager API
       "Properties" : {
         "Description" : "sign and verify with session manager keys",
         "ManagedPolicyName" : "sessMgrKmsPolicy",
-        "Path" : "{{ "littleware/api/" + stackParameters.DomainName }}",
+        "Path" : "{{ "/littleware/api/" + stackParameters.DomainName + "/" }}",
         "PolicyDocument" : {
           "Version": "2012-10-17",
           "Statement": {
@@ -109,11 +115,9 @@ associated with the session manager API
               "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess",
               { "Ref": "sessMgrKmsPolicy" }
           ],
-          "Policies": [
-          ],
           "MaxSessionDuration" : 3600,
-          "Path" : "{{ "littleware/api/" + stackParameters.DomainName }}",
-          "RoleName" : "sessionMgrLamda"
+          "Path" : "{{ "/littleware/api/" + stackParameters.DomainName + "/" }}",
+          "RoleName" : "sessionMgrLambda"
         }
     },
 
@@ -145,7 +149,7 @@ associated with the session manager API
         },
         "FunctionName" : { "Fn::Join": [ "-", ["sessmgr", "{{ stackParameters.DomainName | replace(".", "-") }}",  { "Ref": "StackName" }, { "Ref": "StageName" }, "prod"]] },
         "MemorySize" : 256,
-        "Role" : { "Ref": "sessMgrRole" },
+        "Role" : { "Fn::GetAtt": ["sessMgrRole", "Arn"] },
         "Tags": [
           {{ stackTagsStr }}
         ],
@@ -172,7 +176,6 @@ associated with the session manager API
           "Description" : "prod stage lambda alias",
           "FunctionName" : { "Ref": "sessMgrLambda" },
           "FunctionVersion" : { "Fn::GetAtt": ["{{ stackVariables.sessmgr.prodLambdaVersion }}", "Version"] },
-          {# TODO - add canary support ... #}
           "Name" : "gateway_prod"
         }
     },
@@ -188,7 +191,6 @@ associated with the session manager API
         ]}
       }
     },
-
     "sessMgrProdPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
@@ -209,7 +211,7 @@ associated with the session manager API
             "Types": ["EDGE"]
           },
           "MinimumCompressionSize" : 128,
-          "Name" : { "Fn::Join": [ "-", ["sessmgr_api", { "Ref": "StackName" }, { "Ref": "StageName" }]] },
+          "Name" : "{{ "sessmgr_api-" + stackParameters.DomainName }}",
           "Body": {% include "./sessionMgrOpenApi.json" %},
           "Tags": [
             {{ stackTagsStr }}
@@ -239,7 +241,7 @@ associated with the session manager API
           "ResourcePath": "/*"
         }],
         "RestApiId": {"Ref": "sessMgrApi"},
-        "StageName": "prodSessMgr",
+        "StageName": "prod",
         "Variables": {
           "functionName": {"Fn::Join": [":", [
               {"Ref": "sessMgrLambda"},
@@ -263,7 +265,7 @@ associated with the session manager API
           "ResourcePath": "/*"
         }],
         "RestApiId": {"Ref": "sessMgrApi"},
-        "StageName": "betaSessMgr",
+        "StageName": "beta",
         "Variables": {
           "functionName": {"Ref": "sessMgrLambda"}
         },
@@ -276,9 +278,9 @@ associated with the session manager API
 
 {% set outputs %}
     "SessMgrExecuteUrl": {
-      "Description": "URL to execute against an authn API stage",
+      "Description": "URL to execute against an sessmgr API stage",
       "Value": {"Fn::Join": ["",
-        ["https://", {"Ref": "sessMgrApi"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/STAGENAME-beta_or_prodSessMgr"]
+        ["https://", {"Ref": "sessMgrApi"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/beta"]
       ]}
     }
 {% endset %}

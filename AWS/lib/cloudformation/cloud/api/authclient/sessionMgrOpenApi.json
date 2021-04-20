@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "api.frickjack.com session manager api",
-    "description": "authclient.frickjack.com API - simple cognito OIDC client",
+    "description": "api.frickjack.com session manager api",
     "contact": {
       "email": "admin@frickjack.com"
     },

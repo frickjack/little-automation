@@ -60,35 +60,6 @@ associated with the OIDC authentication client API
         }
       }
     },
-    "sessionMgrLambda": {
-      "Type" : "AWS::Lambda::Function",
-      "Properties" : {
-        "Code" : {
-          "S3Bucket" : { "Ref": "LambdaBucket" },
-          "S3Key" : { "Ref": "LambdaKey" }
-        },
-        "Description" : "authn functions",
-        "Environment" : {
-          "Variables": { 
-            "LittleMessage": "hello",
-            "LITTLE_AUTHN_CONFIG": "{ \"type\": \"env\", \"value\": \"LITTLE_LAMBDA_CONFIG\" }",
-            "LITTLE_LAMBDA_CONFIG": {"Ref": "LambdaConfig"}
-          }
-        },
-        "FunctionName" : { "Fn::Join": [ "-", ["authclient", "{{ stackParameters.DomainName | replace(".", "-") }}",  { "Ref": "StackName" }, { "Ref": "StageName" }, "authn"]] },
-        "Handler" : "index.lambdaHandler",
-        "MemorySize" : 256,
-        "Role" : { "Ref": "LambdaRole" },
-        "Runtime" : "nodejs14.x",
-        "Tags": [
-          {{ stackTagsStr }}
-        ],
-        "Timeout" : 3,
-        "TracingConfig" : {
-          "Mode": "Active"
-        }
-      }
-    },
 
     {% for item in stackVariables.authnapi.lambdaVersions %}
       "{{ item.resourceName }}": {
@@ -142,7 +113,7 @@ associated with the OIDC authentication client API
             "Types": ["EDGE"]
           },
           "MinimumCompressionSize" : 128,
-          "Name" : { "Fn::Join": [ "-", ["apiclient_frickjack_com", { "Ref": "StackName" }, { "Ref": "StageName" }]] },
+          "Name" : "{{ "authn_api-" + stackParameters.DomainName }}",
           "Body": {% include "./authnOpenApi.json" %},
           "Tags": [
             {{ stackTagsStr }}
@@ -211,7 +182,7 @@ associated with the OIDC authentication client API
     "AuthnExecuteUrl": {
       "Description": "URL to execute against an authn API stage",
       "Value": {"Fn::Join": ["",
-        ["https://", {"Ref": "apiGateway"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/STAGENAME"]
+        ["https://", {"Ref": "apiGateway"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/beta"]
       ]}
     }
 {% endset %}

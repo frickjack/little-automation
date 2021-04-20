@@ -38,6 +38,7 @@ See https://blog.frickjack.com/2020/07/little-tools-for-api-gateway.html
       "AllowedValues": [ "prod", "pre-prod", "qa", "dev" ]
     },
     {{ authnApi.parameters }}
+    {# sessmgr api does not take cf parameters - just little variables #}
   },
 
   "Resources": {
@@ -94,7 +95,8 @@ See https://blog.frickjack.com/2020/07/little-tools-for-api-gateway.html
   },
 
   "Outputs": {
-    {{ authnApi.outputs }},
+    {{ authnApi.outputs }}
+    ,
     {{ sessmgr.outputs }}
   }
 }
