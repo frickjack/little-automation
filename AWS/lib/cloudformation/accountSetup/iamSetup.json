@@ -434,13 +434,7 @@
               {
                 "Effect": "Allow",
                 "Action": [
-                  "kms:CreateAlias",
-                  "kms:CreateKey",
-                  "kms:DeleteAlias",
-                  "kms:Describe*",
-                  "kms:GenerateRandom",
-                  "kms:Get*",
-                  "kms:List*"
+                  "kms:*"
                 ],
                 "Resource": "*"
               },
