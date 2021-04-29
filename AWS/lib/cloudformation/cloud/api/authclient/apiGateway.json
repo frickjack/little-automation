@@ -81,6 +81,20 @@ See https://blog.frickjack.com/2020/07/little-tools-for-api-gateway.html
       }
     },
 
+    "sessMgrProdDomainMapping": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "Properties": {
+          "BasePath": "sessmgr",
+          "DomainName": {
+            "Ref": "prodDomainName"
+          },
+          "RestApiId": {
+              "Ref": "sessMgrApi"
+          },
+          "Stage": "prod"
+      }
+    },
+
     "betaDomainMapping": {
       "Type": "AWS::ApiGateway::BasePathMapping",
       "Properties": {
@@ -91,7 +105,20 @@ See https://blog.frickjack.com/2020/07/little-tools-for-api-gateway.html
           },
           "Stage": "beta"
       }
+    },
+
+    "sessMgrBetaDomainMapping": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "Properties": {
+          "BasePath": "sessmgr",
+          "DomainName": { "Ref": "betaDomainName" },
+          "RestApiId": {
+              "Ref": "sessMgrApi"
+          },
+          "Stage": "beta"
+      }
     }
+
   },
 
   "Outputs": {

@@ -1,20 +1,28 @@
 # TL;DR
 
-Training journal.  Anything that involves goals over time, and journaling of daily progress.
+Tools for specifying, automating, and gaming workflows and pipelines that implement a hiring or other application processes - resume submission, skills challenges, interview folder collection, statement of culture values.
 
-## Idea
+## Idea of Culture and Values
 
-Ex: workouts, music, diet
+Culture is what you do.
+Example culture and values statement:
+* dog food
+* make it work
+* make sure it works
 
-Provide mechanisms to:
-* set goals
-* include coaches
-* inspiration and motivation
-* share experience
-* calendar
-* teams and individuals - goal hierarchy
-* rewards
+Example mission statements:
+* bring a clean energy future
+* empower small businesses and individuals through technology
+
+See Y-combinator Youtube talk on culture in startup school 2019.
 
 ## Deliverables
 
 * Standard: API design, UX design, documentation, testing, monitoring, SLO, bLog
+* web site
+* api, cli, sdk?
+* automated interview: 
+    - series of questions with forks, etc
+    - gamification
+* tools for collecting interview notes, shared coding editors, ssh access, etc
+* candidate and application tracking, ranking

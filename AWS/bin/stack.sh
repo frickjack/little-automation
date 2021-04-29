@@ -371,13 +371,13 @@ filterStack() {
 
 validateStack() {
     local templateStr
-    templateStr="$(filterStack "$@")" || return 1
+    templateStr="$(filterStack "$@" | jq -c .)" || return 1
     aws cloudformation validate-template --template-body "$templateStr"
 }
 
 validateTemplate() {
     local templateStr
-    templateStr="$(filterTemplate "$@")" || return 1
+    templateStr="$(filterTemplate "$@" | jq -c .)" || return 1
     aws cloudformation validate-template --template-body "$templateStr" | cat -
     return "${PIPESTATUS[0]}"
 }
