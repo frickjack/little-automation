@@ -106,6 +106,18 @@
                   "Resource": [
                     "*"
                   ]
+                },
+                {
+                  "Sid": "KmsPolicy",
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:GetPublicKey",
+                    "kms:DescribeKey",
+                    "kms:Sign"
+                  ],
+                  "Resource": [
+                    "*"
+                  ]
                 }
               ]
             }

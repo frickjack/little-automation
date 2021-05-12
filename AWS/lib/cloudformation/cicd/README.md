@@ -22,6 +22,13 @@ ex:
 little secret create applications/cicd/cell0/dev/github-token '{ "token": "the-token-value" }' 'github access token'
 ```
 
+## cicdIam permissions
+
+The `kms` permissions are for the `littleware` cloudmgr test suite.
+
+The `lambda` and `ecr` permissions are there for publishing
+new Docker images, etc.
+
 ## nodeBuild template
 
 ### Parameters
