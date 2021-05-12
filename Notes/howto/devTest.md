@@ -7,6 +7,12 @@ Howto design, develop, test, document, deploy
 This repository has multiple things going on, and has
 evolved over time.  Let's try to find some order in the chaos.
 
+## Repository Management
+
+[Angular style](https://medium.com/@menuka/writing-meaningful-git-commit-messages-a62756b65c81) commit messages.
+
+[Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) branch management.  A short-lived branches should rebase (rather than merge) to sync up with the long-lived parent it branches off of.
+
 ### little tools
 
 The `AWS/little.sh` script is the entry point to a suite of
