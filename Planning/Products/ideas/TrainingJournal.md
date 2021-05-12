@@ -1,28 +1,51 @@
 # TL;DR
 
-Tools for specifying, automating, and gaming workflows and pipelines that implement a hiring or other application processes - resume submission, skills challenges, interview folder collection, statement of culture values.
+Training journal.  Anything that involves goals over time, and journaling of daily progress.
 
-## Idea of Culture and Values
+## Ideas
 
-Culture is what you do.
-Example culture and values statement:
-* dog food
-* make it work
-* make sure it works
+Ex: workouts, music practice, diet
 
-Example mission statements:
-* bring a clean energy future
-* empower small businesses and individuals through technology
+Mechanisms to:
 
-See Y-combinator Youtube talk on culture in startup school 2019.
+* set goal hierarchies, and associate lists, databases, documentation, discussion, calendars, kpi metrics, media, ... with goals - ex:
+    - happy family / go on a vacation / plan the vacation -- destination options list
+    - be healthy / good physical health / diet -- grocery list
+    - be healthy / good physical health / exercise -- training journal
+    - be healthy / mental health / stay in touch -- contacts db, birthday calendar
+    - be healthy / mental health / have hobbies / guitar -- songs to learn list, practice journal
+    - have good finances / save for retirement /
+    - happy family / visit / parents
+    - ...
+
+* a goal moves between states, have a priority, ... - goal == project
+* include coaches
+* inspiration and motivation
+* share experience
+* calendar
+* teams and individuals - goal hierarchy
+* rewards
+* notes for end of the day planning, review, etc
+* Eisenhower prioritization matrix
+* Day planning
+* stackoverflow meets slack
+* knowledge graph - ex: link name to entry in contacts list
+* documentation 
+    - ex: project goal 6 pager
+    - ex: stackoverflow FAQ's
+* discussion threads
+* search
+* track history and kpi/metrics
+
+Knowledge graph?  Mind map?  Evernote?
+
 
 ## Deliverables
 
 * Standard: API design, UX design, documentation, testing, monitoring, SLO, bLog
-* web site
-* api, cli, sdk?
-* automated interview: 
-    - series of questions with forks, etc
-    - gamification
-* tools for collecting interview notes, shared coding editors, ssh access, etc
-* candidate and application tracking, ranking
+
+## Reference
+
+* https://slab.com/
+* https://coda.com
+* vs wikis, confluence, Microsoft Teams, github wiki, docs, ...
