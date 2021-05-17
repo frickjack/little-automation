@@ -54,7 +54,7 @@
             }
     ],
     "Littleware": {
-        "TemplatePath": "lib/cloudformation/cloud/api/authclient/apiGateway.json",
+        "TemplatePath": "lib/cloudformation/cloud/api/authclient/root.json",
         "Variables": {
             "authnapi": {
                 "lambdaVersions": [
@@ -91,22 +91,34 @@
                 ],
                 "kmsSigningKey": "sessmgr20210416",
                 "kmsOldKey": "sessmgr20210416",
-                "lambdaImage": "027326493842.dkr.ecr.us-east-2.amazonaws.com/little/session_mgr:2.6.1",
+                "kmsNewKey": "sessmgr20210416",
+                "jwksUrl": "https://cognito-idp.us-east-2.amazonaws.com/us-east-2_860PcgyKN/.well-known/jwks.json",
+                "cloudDomain": "dev.aws-us-east-2.frickjack.com",
+                "cookieDomain": ".frickjack.com",
+                "lambdaImage": "027326493842.dkr.ecr.us-east-2.amazonaws.com/little/session_mgr:3.0.0",
                 "lambdaVersions": [
                     {
                         "resourceName": "sessmgr20210416v2m6p1",
                         "description": "initial prod version"
+                    },
+                    {
+                        "resourceName": "sessmgr20210515v3m0p0",
+                        "description": "v3.0.0"
                     }
                 ],
-                "prodLambdaVersion": "sessmgr20210416v2m6p1",
+                "prodLambdaVersion": "sessmgr20210515v3m0p0",
                 "gatewayDeployments": [
                     {
                         "resourceName": "deploy20210416r0",
                         "description": "initial deployment"
+                    },
+                    {
+                        "resourceName": "deploy20210514",
+                        "description": "add /versions"
                     }
                 ],
-                "prodDeployment": "deploy20210416r0",
-                "betaDeployment": "deploy20210416r0"
+                "prodDeployment": "deploy20210514",
+                "betaDeployment": "deploy20210514"
             }
         }
     }

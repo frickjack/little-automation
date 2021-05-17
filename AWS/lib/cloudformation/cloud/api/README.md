@@ -28,6 +28,12 @@ The `authclient/smokeTest.sh` runs an interactive test from the underlying `@lit
 LITTLE_AUTHN_BASE=https://api.frickjack.com/authn bash ./smokeTest.sh
 ```
 
+### sessmgr
+
+* authenticate via the normal login flow
+* POST to https://api.frickjack.com/sessmgr/session/00000000-0000-0000-0000-000000000000
+* GET https://api.frickjack.com/sessmgr/session/00000000-0000-0000-0000-000000000000
+
 
 ## Notes
 

@@ -20,7 +20,7 @@ associated with the session manager API
     "{{ keyName }}": {
       "Type" : "AWS::KMS::Key",
       "Properties" : {
-          "Description" : "assymetric kms key for session mgr jwt signing and validation",
+          "Description" : "asymmetric kms key for session mgr jwt signing and validation",
           "KeyPolicy" : {
               "Id": "key-consolepolicy-3",
               "Version": "2012-10-17",
@@ -54,6 +54,9 @@ associated with the session manager API
     {# old signing key - rotated out #}
     {% set kmsOldAlias %}{{ "alias/littleware/api/" + (stackParameters.DomainName | replace(".", "-")) + "/sessMgrOldKey" }}{% endset %}
 
+    {# new signing key - not yet used for signing #}
+    {% set kmsNewAlias %}{{ "alias/littleware/api/" + (stackParameters.DomainName | replace(".", "-")) + "/sessMgrNewKey" }}{% endset %}
+
     "kmsSigningKey": {
       "Type" : "AWS::KMS::Alias",
       "Properties" : {
@@ -68,6 +71,13 @@ associated with the session manager API
           "TargetKeyId" : { "Ref": "{{ stackVariables.sessmgr.kmsOldKey }}" }
         }
     },
+    "kmsNewKey": {
+      "Type" : "AWS::KMS::Alias",
+      "Properties" : {
+          "AliasName" : "{{ kmsNewAlias }}",
+          "TargetKeyId" : { "Ref": "{{ stackVariables.sessmgr.kmsNewKey }}" }
+        }
+    },
 
     "sessMgrKmsPolicy": {
       "Type" : "AWS::IAM::ManagedPolicy",
@@ -80,6 +90,8 @@ associated with the session manager API
           "Statement": {
             "Effect": "Allow",
             "Action": [
+              "kms:GetPublicKey",
+              "kms:DescribeKey",
               "kms:Sign",
               "kms:Verify"
             ],
@@ -130,25 +142,30 @@ associated with the session manager API
         },
         "Description" : "session manager API lambda",
         "Environment" : {
-          "Variables": { 
-            "LITTLE_SESSMGR_CONFIG": {{
-              { 
-                "type": "env", 
-                "value": "LITTLE_LAMBDA_CONFIG" 
-              } | dump | dump
-            }},
-            "LITTLE_LAMBDA_CONFIG": {{
+          "Variables": {
+            "JAVA_TOOL_OPTIONS": "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager",
+            "LITTLE_CLOUDMGR": {{
               {
-                  kms: {
-                     kmsSigningAlias: kmsSigningAlias,
-                     kmsOldAlias: kmsOldAlias
-                  } 
+                "little.cloudmgr.domain" : stackVariables.sessmgr.cloudDomain,
+                "little.cloudmgr.sessionmgr.type": "aws",
+                "little.cloudmgr.sessionmgr.localconfig": {}, 
+                "little.cloudmgr.sessionmgr.awsconfig": {
+                    "kmsPublicKeys": [
+                      kmsSigningAlias, kmsOldAlias, kmsNewAlias
+                    ],
+                    "kmsSigningKey": kmsSigningAlias,
+                    "oidcJwksUrl": stackVariables.sessmgr.jwksUrl
+                },
+                "little.cloudmgr.sessionmgr.lambdaconfig": {
+                    "corsDomainWhiteList": [ stackVariables.sessmgr.cookieDomain ],
+                    "cookieDomain": stackVariables.sessmgr.cookieDomain
+                }
               } | dump | dump
             }}
           }
         },
         "FunctionName" : { "Fn::Join": [ "-", ["sessmgr", "{{ stackParameters.DomainName | replace(".", "-") }}",  { "Ref": "StackName" }, { "Ref": "StageName" }, "prod"]] },
-        "MemorySize" : 256,
+        "MemorySize" : 768,
         "Role" : { "Fn::GetAtt": ["sessMgrRole", "Arn"] },
         "Tags": [
           {{ stackTagsStr }}
@@ -195,7 +212,7 @@ associated with the session manager API
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "Action": "lambda:invokeFunction",
-        "FunctionName": {"Ref": "prodLambdaAlias"},
+        "FunctionName": {"Ref": "sessMgrLambdaAlias"},
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {"Fn::Join": ["", 
           ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "sessMgrApi"}, "/*"]
