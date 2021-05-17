@@ -14,6 +14,7 @@ Nothing here yet.
 * [Littleware and API Gateway](./Notes/explanation/apiGateway.md)
 * [CICD with CodeBuild](./Notes/explanation/codeBuildCICD.md)
 * [ECR setup](./Notes/explanation/ecrSetup.md)
+* [Cloudformation Patterns](./Notes/explanation/cfPatterns.md)
 
 ### [how-tos](./Notes/howto)
 

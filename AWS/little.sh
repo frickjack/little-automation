@@ -191,6 +191,7 @@ littleRun() {
         export AWS_SESSION_TOKEN="$(jq -r .Credentials.SessionToken < "$cacheFile")"
         export AWS_CACHE_FILE="$cacheFile"
         export AWS_TOKEN_EXPIRATION="$expiration"
+        export AWS_REGION="$region"
         
         littleDoCommand "$@"
     )

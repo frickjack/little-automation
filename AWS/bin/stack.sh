@@ -180,7 +180,7 @@ apply() {
     filteredTemplate="$(mktemp "${XDG_RUNTIME_DIR}/templateFilter_XXXXXX")"
     local stackVariables
     stackVariables="$(getStackVariables "$stackPath")" || return 1
-    filterTemplate "$templatePath" "$stackVariables" | tee "$filteredTemplate" 1>&2
+    filterTemplate "$templatePath" "$stackVariables" | jq -c . | tee "$filteredTemplate" 1>&2
     if ! aws cloudformation validate-template --template-body "$(cat "$filteredTemplate")" > /dev/null; then
         gen3_log_err "template validation failed after filter"
         return 1
@@ -371,13 +371,13 @@ filterStack() {
 
 validateStack() {
     local templateStr
-    templateStr="$(filterStack "$@")" || return 1
+    templateStr="$(filterStack "$@" | jq -c .)" || return 1
     aws cloudformation validate-template --template-body "$templateStr"
 }
 
 validateTemplate() {
     local templateStr
-    templateStr="$(filterTemplate "$@")" || return 1
+    templateStr="$(filterTemplate "$@" | jq -c .)" || return 1
     aws cloudformation validate-template --template-body "$templateStr" | cat -
     return "${PIPESTATUS[0]}"
 }
@@ -397,7 +397,10 @@ filterTemplate() {
         filterVariables="$1"
         shift
     fi
-    if ! templateStr="$(little filter "$filterVariables" < "$templatePath")"; then
+    local templateFolder
+    templateFolder="$(dirname "$templatePath")" || return 1
+    # cd to folder to support nunjucks import/include statements
+    if ! templateStr="$(cd "$templateFolder" && little filter "$filterVariables" < "$templatePath")"; then
       gen3_log_err "Template filter failed: $templatePath"
       return 1
     fi

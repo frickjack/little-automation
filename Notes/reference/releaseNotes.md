@@ -21,6 +21,14 @@ Note - `git log tag1...tag2` shows the commit log between versions.
 
 ### Notes
 
+## Version 1.2.2
+
+### Improvements
+
+* little stack compress json
+* CICD to nodejs14
+* api gateway  session manager stage
+
 ## Version 1.2.0
 
 ### Features

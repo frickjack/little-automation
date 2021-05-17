@@ -286,7 +286,7 @@ lambdaLogEvents() {
     streamName="$(jq -e -r '.[0].logStreamName' <<< "$streamInfo")" && [[ -n "$streamName" ]] || return 1
     local functionName="$1"
     local logGroup="/aws/lambda/$functionName"
-    aws logs get-log-events --log-group-name "$logGroup" --log-stream-name "${streamName}" | jq -r '.events | map(.timeStampDate = (.timestamp | todate))'
+    aws logs get-log-events --log-group-name "$logGroup" --log-stream-name "${streamName}" | jq -r '.events | map(.timeStampDate = (.timestamp/1000 | todate))'
 }
 
 # main ---------------------

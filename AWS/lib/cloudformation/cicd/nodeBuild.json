@@ -24,6 +24,15 @@
         "Default": "https://github.com/frickjack/misc-stuff.git",
         "ConstraintDescription": "https://github.com/ repo url",
         "AllowedPattern": "https://github.com/.+"
+      },
+      "PrivilegedMode": {
+        "AllowedValues": [
+            "true",
+            "false"
+        ],
+        "Default": "false",
+        "Description": "Run codebuild container privileged to allow in-container docker daemon",
+        "Type": "String"
       }
     },
     
@@ -46,7 +55,8 @@
                     }
                    ],
                   "Image" : "aws/codebuild/standard:5.0",
-                  "Type" : "LINUX_CONTAINER"
+                  "Type" : "LINUX_CONTAINER",
+                  "PrivilegedMode": { "Ref": "PrivilegedMode" }
                 },
                 "Name" : { "Ref": "ProjectName" },
                 "QueuedTimeoutInMinutes" : 30,

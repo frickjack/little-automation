@@ -1,25 +1,13 @@
-{
-  "AWSTemplateFormatVersion": "2010-09-09",
-  "Parameters": {
-    "CertificateArn": {
-      "Type": "String",
-      "Description": "ACM Certificate ARN"
-    },
-    "DomainName": {
-      "Type": "String",
-      "Description": "custom domain for the gateway - aligns with certificate"
-    },
-    "StackName": {
-      "Type": "String",
-      "Description": "deployment stack - ex api.frickjack.com, reuben.dev.frickjack.com, ...",
-      "ConstraintDescription": "should usually be the domain of the deployment"
-    },
-    "StageName": {
-      "Type": "String",
-      "Description": "dev stage associated with this stack (prod, pre-prod, qa, dev)",
-      "Default" : "prod",
-      "AllowedValues": [ "prod", "pre-prod", "qa", "dev" ]
-    },
+{#
+
+# TL;DR 
+
+Cloudformation nunjucks module for resources
+associated with the OIDC authentication client API
+
+#}
+
+{% set parameters %}
     "LambdaBucket": {
       "Type": "String",
       "Description": "bucket of s3 with lambda package",
@@ -39,14 +27,10 @@
     },
     "LambdaConfig": {
       "Type": "AWS::SSM::Parameter::Value<String>"
-    },
-    "GatewayRole": {
-      "Type": "String",
-      "Description": "arn of IAM role for gateway to assume",
-      "ConstraintDescription": "IAM role arn"
     }
-  },
-  "Resources": {
+{% endset %}
+
+{% set resources %}
     "apiLambda": {
       "Type" : "AWS::Lambda::Function",
       "Properties" : {
@@ -77,7 +61,7 @@
       }
     },
 
-    {% for item in stackVariables.lambdaVersions %}
+    {% for item in stackVariables.authnapi.lambdaVersions %}
       "{{ item.resourceName }}": {
         "Type" : "AWS::Lambda::Version",
         "Properties" : {
@@ -92,7 +76,7 @@
       "Properties" : {
           "Description" : "prod stage lambda alias",
           "FunctionName" : { "Ref": "apiLambda" },
-          "FunctionVersion" : { "Fn::GetAtt": ["{{ stackVariables.prodLambdaVersion }}", "Version"] },
+          "FunctionVersion" : { "Fn::GetAtt": ["{{ stackVariables.authnapi.prodLambdaVersion }}", "Version"] },
           "Name" : "gateway_prod"
         }
     },
@@ -129,15 +113,15 @@
             "Types": ["EDGE"]
           },
           "MinimumCompressionSize" : 128,
-          "Name" : { "Fn::Join": [ "-", ["apiclient_frickjack_com", { "Ref": "StackName" }, { "Ref": "StageName" }]] },
-          "Body": {{ templateFiles.openapi }},
+          "Name" : "{{ "authn_api-" + stackParameters.DomainName }}",
+          "Body": {% include "./authnOpenApi.json" %},
           "Tags": [
             {{ stackTagsStr }}
           ]
         }
     },
 
-    {% for item in stackVariables.gatewayDeployments %}
+    {% for item in stackVariables.authnapi.gatewayDeployments %}
       "{{ item.resourceName }}": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
@@ -151,7 +135,7 @@
     "prodStage": {
       "Type": "AWS::ApiGateway::Stage",
       "Properties": {
-        "DeploymentId": { "Ref": "{{ stackVariables.prodDeployment }}" },
+        "DeploymentId": { "Ref": "{{ stackVariables.authnapi.prodDeployment }}" },
         "MethodSettings": [{
           "DataTraceEnabled": true,
           "HttpMethod": "*",
@@ -175,7 +159,7 @@
     "betaStage": {
       "Type": "AWS::ApiGateway::Stage",
       "Properties": {
-        "DeploymentId": { "Ref": "{{ stackVariables.betaDeployment }}" },
+        "DeploymentId": { "Ref": "{{ stackVariables.authnapi.betaDeployment }}" },
         "MethodSettings": [{
           "DataTraceEnabled": true,
           "HttpMethod": "*",
@@ -191,63 +175,14 @@
           {{ stackTagsStr }}
         ]
       }
-    },
-
-    "prodDomainName": {
-      "Type" : "AWS::ApiGateway::DomainName",
-      "Properties" : {
-          "CertificateArn" : { "Ref": "CertificateArn" },
-          "DomainName" : { "Ref": "DomainName" },
-          "EndpointConfiguration" : { "Types": ["EDGE"] },
-          "SecurityPolicy": "TLS_1_2"
-        }
-    },
-
-    "betaDomainName": {
-      "Type" : "AWS::ApiGateway::DomainName",
-      "Properties" : {
-          "CertificateArn" : { "Ref": "CertificateArn" },
-          "DomainName" : {"Fn::Join": ["",
-            ["beta-", { "Ref": "DomainName" }]]
-          },
-          "EndpointConfiguration" : { "Types": ["EDGE"] },
-          "SecurityPolicy": "TLS_1_2"
-        }
-    },
-
-    "prodDomainMapping": {
-      "Type": "AWS::ApiGateway::BasePathMapping",
-      "Properties": {
-          "BasePath": "authn",
-          "DomainName": {
-            "Ref": "prodDomainName"
-          },
-          "RestApiId": {
-              "Ref": "apiGateway"
-          },
-          "Stage": "prod"
-      }
-    },
-
-    "betaDomainMapping": {
-      "Type": "AWS::ApiGateway::BasePathMapping",
-      "Properties": {
-          "BasePath": "authn",
-          "DomainName": { "Ref": "betaDomainName" },
-          "RestApiId": {
-              "Ref": "apiGateway"
-          },
-          "Stage": "beta"
-      }
     }
-  },
+{% endset %}
 
-  "Outputs": {
-    "RootUrl": {
-      "Description": "Root URL of the API gateway",
+{% set outputs %}
+    "AuthnExecuteUrl": {
+      "Description": "URL to execute against an authn API stage",
       "Value": {"Fn::Join": ["",
-        ["https://", {"Ref": "apiGateway"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com"]
+        ["https://", {"Ref": "apiGateway"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/beta"]
       ]}
     }
-  }
-}
+{% endset %}

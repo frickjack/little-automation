@@ -1,4 +1,3 @@
 # TL;DR
 
-Setup AWS Cloud9 dev environment
-
+Move route53 zone management into cloudformation

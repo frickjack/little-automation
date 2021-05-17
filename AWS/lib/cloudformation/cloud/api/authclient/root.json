@@ -1,0 +1,129 @@
+{#
+
+# TL;DR
+
+Root nunjucks modules for cloud level API gateway - 
+https://api.cloud
+
+* authn API stages (lambda backed) OIDC API client
+* sessionMgr API stages issues JWT session tokens
+
+See https://blog.frickjack.com/2020/07/little-tools-for-api-gateway.html
+
+#}
+
+{% import "./authnApiStage.js.njk" as authnApi with context %}
+{% import "./sessionMgrApiStage.js.njk" as sessmgr with context %}
+
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "CertificateArn": {
+      "Type": "String",
+      "Description": "ACM Certificate ARN"
+    },
+    "DomainName": {
+      "Type": "String",
+      "Description": "custom domain for the gateway - aligns with certificate"
+    },
+    "StackName": {
+      "Type": "String",
+      "Description": "deployment stack - ex api.frickjack.com, reuben.dev.frickjack.com, ...",
+      "ConstraintDescription": "should usually be the domain of the deployment"
+    },
+    "StageName": {
+      "Type": "String",
+      "Description": "dev stage associated with this stack (prod, pre-prod, qa, dev)",
+      "Default" : "prod",
+      "AllowedValues": [ "prod", "pre-prod", "qa", "dev" ]
+    },
+    {{ authnApi.parameters }}
+    {# sessmgr api does not take cf parameters - just little variables #}
+  },
+
+  "Resources": {
+    {{ authnApi.resources }},
+    {{ sessmgr.resources }},
+
+    "prodDomainName": {
+      "Type" : "AWS::ApiGateway::DomainName",
+      "Properties" : {
+          "CertificateArn" : { "Ref": "CertificateArn" },
+          "DomainName" : { "Ref": "DomainName" },
+          "EndpointConfiguration" : { "Types": ["EDGE"] },
+          "SecurityPolicy": "TLS_1_2"
+        }
+    },
+
+    "betaDomainName": {
+      "Type" : "AWS::ApiGateway::DomainName",
+      "Properties" : {
+          "CertificateArn" : { "Ref": "CertificateArn" },
+          "DomainName" : {"Fn::Join": ["",
+            ["beta-", { "Ref": "DomainName" }]]
+          },
+          "EndpointConfiguration" : { "Types": ["EDGE"] },
+          "SecurityPolicy": "TLS_1_2"
+        }
+    },
+
+    "prodDomainMapping": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "Properties": {
+          "BasePath": "authn",
+          "DomainName": {
+            "Ref": "prodDomainName"
+          },
+          "RestApiId": {
+              "Ref": "apiGateway"
+          },
+          "Stage": "prod"
+      }
+    },
+
+    "sessMgrProdDomainMapping": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "Properties": {
+          "BasePath": "sessmgr",
+          "DomainName": {
+            "Ref": "prodDomainName"
+          },
+          "RestApiId": {
+              "Ref": "sessMgrApi"
+          },
+          "Stage": "prod"
+      }
+    },
+
+    "betaDomainMapping": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "Properties": {
+          "BasePath": "authn",
+          "DomainName": { "Ref": "betaDomainName" },
+          "RestApiId": {
+              "Ref": "apiGateway"
+          },
+          "Stage": "beta"
+      }
+    },
+
+    "sessMgrBetaDomainMapping": {
+      "Type": "AWS::ApiGateway::BasePathMapping",
+      "Properties": {
+          "BasePath": "sessmgr",
+          "DomainName": { "Ref": "betaDomainName" },
+          "RestApiId": {
+              "Ref": "sessMgrApi"
+          },
+          "Stage": "beta"
+      }
+    }
+
+  },
+
+  "Outputs": {
+    {{ authnApi.outputs }}
+    ,
+    {{ sessmgr.outputs }}
+  }
+}

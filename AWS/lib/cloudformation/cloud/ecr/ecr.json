@@ -17,7 +17,43 @@
             },
             "ImageTagMutability" : "MUTABLE",
             "LifecyclePolicy" : {
-              "LifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"description\":\"age out git dev tags\",\"selection\":{\"tagStatus\":\"tagged\",\"tagPrefixList\":[\"gitsha_\",\"gitbranch_\",\"gitpr_\"],\"countType\":\"sinceImagePushed\",\"countUnit\":\"days\",\"countNumber\":7},\"action\":{\"type\":\"expire\"}},{\"rulePriority\":2,\"description\":\"age out untagged images\",\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"imageCountMoreThan\",\"countNumber\":5},\"action\":{\"type\":\"expire\"}}]}"
+              "LifecyclePolicyText": {# nunjucks json stringify: #}{{
+                {
+                  "rules": [
+                    {
+                      "rulePriority": 1,
+                      "description": "age out git dev tags",
+                      "selection": {
+                        "tagStatus": "tagged",
+                        "tagPrefixList": [
+                          "gitsha_",
+                          "gitbranch_",
+                          "gitpr_"
+                        ],
+                        "countType": "sinceImagePushed",
+                        "countUnit": "days",
+                        "countNumber": 7
+                      },
+                      "action": {
+                        "type": "expire"
+                      }
+                    },
+                    {
+                      "rulePriority": 2,
+                      "description": "age out untagged images",
+                      "selection": {
+                        "tagStatus": "untagged",
+                        "countType": "imageCountMoreThan",
+                        "countNumber": 5
+                      },
+                      "action": {
+                        "type": "expire"
+                      }
+                    }
+                  ]
+                } | dump | dump                
+              }}
+            
             },
             "RepositoryName" : "{{ item.repoName }}",
             "RepositoryPolicyText" : {
