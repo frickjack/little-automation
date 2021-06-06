@@ -4,7 +4,7 @@ How we deploy an [API gateway](https://aws.amazon.com/api-gateway/).
 
 ## Introduction
 
-An [API gateway](https://aws.amazon.com/api-gateway/) on AWS provides a scalable and serverless platform for deploying an HTTP API backed by a [lambda function](https://aws.amazon.com/lambda/), served to clients via a [cloudfront cdn](https://aws.amazon.com/cloudfront/), and metered per client request.  This architecture trades the traditional costs and complexity of maintaining a cluster of servers to host an API for a new set of challenges.  The people (developers, QA, operators, managers) running an API gateway project must become familiar with the technology stack, and adopt tools for integrating the gateway platform into a development and deployment process.  We have begun to adopt a simple process using our own [little tools](https://github.com/frickjack/misc-stuff/).
+An [API gateway](https://aws.amazon.com/api-gateway/) on AWS provides a scalable and serverless platform for deploying an HTTP API backed by a [lambda function](https://aws.amazon.com/lambda/), served to clients via a [cloudfront cdn](https://aws.amazon.com/cloudfront/), and metered per client request.  This architecture trades the traditional costs and complexity of maintaining a cluster of servers to host an API for a new set of challenges.  The people (developers, QA, operators, managers) running an API gateway project must become familiar with the technology stack, and adopt tools for integrating the gateway platform into a development and deployment process.  We have begun to adopt a simple process using our own [little tools](https://github.com/frickjack/little-automation/).
 
 ## API Overview
 
@@ -29,7 +29,7 @@ Systems like the following take different approaches to address this problem.
 * the [serverless framework](https://www.serverless.com/) provides tools that deploy serverless applications across different clouds from its own yaml configuration files
 * the [aws cloud development kit](https://aws.amazon.com/cdk/) provides software libraries for expressing cloudformation templates programatically
 
-We implement our own [little tools](https://github.com/frickjack/misc-stuff/tree/master/AWS/doc) that extend cloudformation templates with expressions (from the [nunjucks](https://mozilla.github.io/nunjucks/) template library) that can dynamically add resources to a stack based on variable values.
+We implement our own [little tools](https://github.com/frickjack/little-automation/tree/master/AWS/doc) that extend cloudformation templates with expressions (from the [nunjucks](https://mozilla.github.io/nunjucks/) template library) that can dynamically add resources to a stack based on variable values.
 The `little stack` tools consume a json stack definition
 with three main parts:
 * a reference to a clouformation template
@@ -40,7 +40,7 @@ If an optional `openapi.yaml` file is present, then its contents are also expose
 
 ## OIDC Client Example 
 
-Let's look in a little more detail at how we use the `little stack` and `little lambda` helpers to deploy [one stack](https://github.com/frickjack/misc-stuff/tree/master/AWS/db/cloudformation/frickjack/cell0/api/api.frickjack.com/authclient) that uses [this](https://github.com/frickjack/misc-stuff/tree/master/AWS/lib/cloudformation/cellSetup/api/authclient) nunjucks-extended cloudformation template.
+Let's look in a little more detail at how we use the `little stack` and `little lambda` helpers to deploy [one stack](https://github.com/frickjack/little-automation/tree/master/AWS/db/cloudformation/frickjack/cell0/api/api.frickjack.com/authclient) that uses [this](https://github.com/frickjack/little-automation/tree/master/AWS/lib/cloudformation/cellSetup/api/authclient) nunjucks-extended cloudformation template.
 The OIDC API fits into a larger appliction infrastructure with these components:
 
 * a cognito identity provider - `auth.domain`
@@ -97,4 +97,4 @@ The `authclient/smokeTest.sh` script runs an interactive test from the underlyin
 ## Summary
 
 Transitioning to an API gateway and lambda based technology stack requires the people that run a project to learn new concepts, and adopt new tools for development and deployment processes.
-We have begun to adopt a simple process using our own [little tools](https://github.com/frickjack/misc-stuff/).
+We have begun to adopt a simple process using our own [little tools](https://github.com/frickjack/little-automation/).

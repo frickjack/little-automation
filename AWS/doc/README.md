@@ -7,8 +7,8 @@ Use documentation for the `little` helper script and its sub commands.
 The `little` scripts are currently installed and updated via `git`.
 
 ```
-git clone https://github.com/frickjack/misc-stuff.git
-alias little='bash ~/Code/misc-stuff/AWS/little.sh'
+git clone https://github.com/frickjack/little-automation.git
+alias little='bash ~/Code/little-automation/AWS/little.sh'
 ```
 
 ### Dependencies

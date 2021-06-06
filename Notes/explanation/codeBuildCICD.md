@@ -23,12 +23,12 @@ Setting up codebuild is straight forward if you're comfortable with cloudformati
 ### save credentials
 
 Codebuild can access credentials in AWS secrets manager for interacting with non-AWS systems like github and npm.org.
-The [misc-stuff](https://github.com/frickjack/misc-stuff) github repo has helpers for common operations tasks like managing secrets.
+The [little-automation](https://github.com/frickjack/little-automation) github repo has helpers for common operations tasks like managing secrets.
 
 ```
-git clone https://github.com/frickjack/misc-stuff.git
-export LITTLE_HOME="$(pwd)/misc-stuff"
-alias little="bash '$(pwd)/misc-stuff/AWS/little.sh'"
+git clone https://github.com/frickjack/little-automation.git
+export LITTLE_HOME="$(pwd)/little-automation"
+alias little="bash '$(pwd)/little-automation/AWS/little.sh'"
 
 little help secret
 little secret create the/secret/key "$(cat secretValue.json)"
@@ -36,7 +36,7 @@ little secret create the/secret/key "$(cat secretValue.json)"
 
 ### codebuild IAM setup
 
-Codebuild needs IAM credentials to allocate build resources.  [This](https://github.com/frickjack/misc-stuff/blob/master/AWS/lib/cloudformation/cicd/cicdIam.json) cloudformation template sets up a standard role that we'll pass to our builds:
+Codebuild needs IAM credentials to allocate build resources.  [This](https://github.com/frickjack/little-automation/blob/master/AWS/lib/cloudformation/cicd/cicdIam.json) cloudformation template sets up a standard role that we'll pass to our builds:
 
 ```
 {
@@ -180,7 +180,7 @@ little stack create "$LITTLE_HOME/AWS/db/cloudformation/YourAccount/cell0/cicd/c
 
 ### register a new build
 
-[This](https://github.com/frickjack/misc-stuff/blob/master/AWS/lib/cloudformation/cicd/nodeBuild.json) cloudformation template registers a new build that runs for pull requests and tag events on a github repository. 
+[This](https://github.com/frickjack/little-automation/blob/master/AWS/lib/cloudformation/cicd/nodeBuild.json) cloudformation template registers a new build that runs for pull requests and tag events on a github repository. 
 In addition to the primary repo the build also pulls in a secondary support repository that hosts our automation scripts.
 
 ```
@@ -206,8 +206,8 @@ In addition to the primary repo the build also pulls in a secondary support repo
       },
       "SupportRepo": {
         "Type": "String",
-        "Description": "url of github secondary repo - default https://github.com/frickjack/misc-stuff.git",
-        "Default": "https://github.com/frickjack/misc-stuff.git",
+        "Description": "url of github secondary repo - default https://github.com/frickjack/little-automation.git",
+        "Default": "https://github.com/frickjack/little-automation.git",
         "ConstraintDescription": "https://github.com/ repo url",
         "AllowedPattern": "https://github.com/.+"
       }

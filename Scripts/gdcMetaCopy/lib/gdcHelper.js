@@ -449,14 +449,14 @@ async function postToIndexd(hostName, credsStr, data) {
 /**
  * Build id to record map from the gdc manifest file set of form:
  * 
-reuben@reuben-pasquini-cdis:~/Code/Littleware/misc-stuff/Scripts/gdcMetaCopy/data-in/gdcRelease11$ head -5 gdc_manifest_20180521_data_release_11.0_active.txt 
+reuben@reuben-pasquini-cdis:~/Code/Littleware/little-automation/Scripts/gdcMetaCopy/data-in/gdcRelease11$ head -5 gdc_manifest_20180521_data_release_11.0_active.txt 
 id	filename	md5	size	state
 0003c9fa-6e97-4fc7-8405-be4be66bf914	0003c9fa-6e97-4fc7-8405-be4be66bf914.vcf.gz	5052597f8752fd2bed1f662ce38e1e70	1172	submitted
 0005bd06-3199-4c0a-95ac-3c0707d542f1	0005bd06-3199-4c0a-95ac-3c0707d542f1.vcf.gz	dd4ec12b11a65e000a8d73ad085e3f89	1309	submitted
 0006ea6b-dbb7-4191-852b-f082eefbf242	0006ea6b-dbb7-4191-852b-f082eefbf242.vcf.gz	664e801efc7d03e87f8fe78d2a4380e3	964	submitted
 00073f13-2ce4-4d50-82b1-51e1017e5f34	00073f13-2ce4-4d50-82b1-51e1017e5f34.vep.vcf.gz	fe046af5564aefb7d029d11a165f05fd	6767	submitted
 
-reuben@reuben-pasquini-cdis:~/Code/Littleware/misc-stuff/Scripts/gdcMetaCopy/data-in/gdcRelease11$ head -5 gdc_manifest_20180521_data_release_11.0_legacy.txt 
+reuben@reuben-pasquini-cdis:~/Code/Littleware/little-automation/Scripts/gdcMetaCopy/data-in/gdcRelease11$ head -5 gdc_manifest_20180521_data_release_11.0_legacy.txt 
 id	filename	md5	size	state
 1474b8a8-284f-4416-8c66-618340458bb2	G28902.Hs_172.T.3.bam	fb57d20026ac6eaeed6d23f88fa99a9d	9494814273	live
 1d322a14-026a-4d35-8de6-1666c8633416	C836.253J-BV.4.bam	68ad31e9436095ab2bc5883a63b344a3	23112568925	live
@@ -647,7 +647,7 @@ async function mergeRecordStreamWithGdc(recordStream, gdcDb) {
  * 
  * 
 
-reuben@reuben-pasquini-cdis:~/Code/Littleware/misc-stuff/Scripts/gdcMetaCopy/data-in/gdcRelease11$ head -5 ../dcfAwsIndex20180727/ccle-open-access.manifest.tsv 
+reuben@reuben-pasquini-cdis:~/Code/Littleware/little-automation/Scripts/gdcMetaCopy/data-in/gdcRelease11$ head -5 ../dcfAwsIndex20180727/ccle-open-access.manifest.tsv 
 2018-05-11 12:47:44    5583408 0045c267-ff51-49df-855f-0af0b4f3d151/G41700.ABC-1.5.bam.bai
 2018-05-11 12:18:43    5506624 004dd13d-35a3-40a6-8737-97bf2cb8ec52/G26243.HT-1197.2.bam.bai
 2018-05-11 11:48:12 9218168832 005a752e-cf77-446a-b708-5a28d3a03170/C836.FTC-238.1.bam

@@ -20,8 +20,8 @@
       },
       "SupportRepo": {
         "Type": "String",
-        "Description": "url of github secondary repo - default https://github.com/frickjack/misc-stuff.git",
-        "Default": "https://github.com/frickjack/misc-stuff.git",
+        "Description": "url of github secondary repo - default https://github.com/frickjack/little-automation.git",
+        "Default": "https://github.com/frickjack/little-automation.git",
         "ConstraintDescription": "https://github.com/ repo url",
         "AllowedPattern": "https://github.com/.+"
       },

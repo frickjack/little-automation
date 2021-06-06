@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ ! -f ./installClient.sh ]]; then
-  echo "ERROR: must run in misc-stuff/Chef folder"
+  echo "ERROR: must run in little-automation/Chef folder"
   exit 1
 fi
 

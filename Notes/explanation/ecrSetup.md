@@ -26,15 +26,15 @@ release-tagged images are available for use (`docker pull`)
 in production accounts.
 
 With the above workflow in mind, we updated the cloudformation
-templates we use to setup our [user (admin, dev, operator)](https://github.com/frickjack/misc-stuff/blob/master/AWS/lib/cloudformation/accountSetup/iamSetup.json)
-and [codebuild (CI)](https://github.com/frickjack/misc-stuff/blob/master/AWS/lib/cloudformation/cicd/cicdIam.json) IAM roles
+templates we use to setup our [user (admin, dev, operator)](https://github.com/frickjack/little-automation/blob/master/AWS/lib/cloudformation/accountSetup/iamSetup.json)
+and [codebuild (CI)](https://github.com/frickjack/little-automation/blob/master/AWS/lib/cloudformation/cicd/cicdIam.json) IAM roles
 to grant full ECR access in our developer account 
 (currently we only have a dev account).
 
-Next we developed a [cloudformation template](https://github.com/frickjack/misc-stuff/blob/dev/AWS/lib/cloudformation/cloud/ecr/ecr.json) for creating ECR repositories in our dev account.
+Next we developed a [cloudformation template](https://github.com/frickjack/little-automation/blob/dev/AWS/lib/cloudformation/cloud/ecr/ecr.json) for creating ECR repositories in our dev account.
 Our template extends the standard cloudformation syntax with
 [nunjucks](https://mozilla.github.io/nunjucks/) tags supported
-by our [little stack](https://github.com/frickjack/misc-stuff/blob/dev/AWS/doc/stack.md) tools.  We also developed a [little ecr](https://github.com/frickjack/misc-stuff/blob/dev/AWS/doc/ecr.md) tool to simplify some common tasks.
+by our [little stack](https://github.com/frickjack/little-automation/blob/dev/AWS/doc/stack.md) tools.  We also developed a [little ecr](https://github.com/frickjack/little-automation/blob/dev/AWS/doc/ecr.md) tool to simplify some common tasks.
 
 There are a few things to notice in the cloudformation template.  First, each repository has an IAM resource policy that allows our production AWS accounts to pull images from ECR repositories in our dev accounts:
 
@@ -101,7 +101,7 @@ because ECR storage costs [ten cents per GByte/month](https://aws.amazon.com/ecr
 ```
 
 Finally, we configure ECR to scan our images for known security vulnerabilities on push.
-Our [little ecr scanreport](https://github.com/frickjack/misc-stuff/blob/dev/AWS/doc/ecr.md) tool retrieves an image's scan-results from the command line.  The workflow that tags an image for production should include a step that verifies that the image is free from vulnerabilities more severe
+Our [little ecr scanreport](https://github.com/frickjack/little-automation/blob/dev/AWS/doc/ecr.md) tool retrieves an image's scan-results from the command line.  The workflow that tags an image for production should include a step that verifies that the image is free from vulnerabilities more severe
 than whatever policy we want to enforce.
 
 ## Summary
