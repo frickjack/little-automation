@@ -1,0 +1,100 @@
+{
+    "StackName": "route53-frickjack-com",
+    "Capabilities": [
+    ],
+    "TimeoutInMinutes": 5,
+    "EnableTerminationProtection": true,
+    "Parameters" : [
+        {
+            "ParameterKey": "DomainName",
+            "ParameterValue": "frickjack.com"
+        }
+    ],
+    "Tags": [
+            {
+                "Key": "org",
+                "Value": "applications"
+            },
+            {
+                "Key": "project",
+                "Value": "cloud.frickjack.com"
+            },
+            {
+                "Key": "stack",
+                "Value": "reuben"
+            },
+            {
+                "Key": "stage",
+                "Value": "dev"
+            },
+            {
+              "Key": "role",
+              "Value": "dev"
+            }
+    ],
+    "Littleware": {
+        "TemplatePath": "lib/cloudformation/cloud/route53/route53.json",
+        "Variables": {
+            "aliasList": [
+                {
+                    "resourceName": "Api",
+                    "domainName": "api.frickjack.com",
+                    "comment": "gateway prod-stage cloudfront alias",
+                    "target": "d3a5rrhx1et4t5.cloudfront.net.",
+                    "hostedZoneId": "Z2FDTNDATAQYW2"
+                },
+                {
+                    "resourceName": "Apps",
+                    "domainName": "apps.frickjack.com",
+                    "comment": "static web cloudfront alias",
+                    "target": "d1n6wy36dn8qay.cloudfront.net.",
+                    "hostedZoneId": "Z2FDTNDATAQYW2"
+                },
+                {
+                    "resourceName": "Auth",
+                    "domainName": "auth.frickjack.com",
+                    "comment": "cognito cloudfront alias",
+                    "target": "d7tz4a9easta0.cloudfront.net.",
+                    "hostedZoneId": "Z2FDTNDATAQYW2"
+                },
+                {
+                    "resourceName": "ApiBeta",
+                    "domainName": "beta-api.frickjack.com",
+                    "comment": "gateway beta-stage cloudfront alias",
+                    "target": "d16mqo5rcyeltv.cloudfront.net.",
+                    "hostedZoneId": "Z2FDTNDATAQYW2"
+                }
+            ],
+            "cnameList": [
+                {
+                    "resourceName": "Tls1",
+                    "domainName": "_d869b5085cb56a202f8de47bb4deb0ce.frickjack.com",
+                    "comment": "TLS verify",
+                    "target": "_cf408df7bec4f525cf7cc4810c4f248b.olprtlswtu.acm-validations.aws."
+                },
+                {
+                    "resourceName": "Blog",
+                    "domainName": "blog.frickjack.com",
+                    "comment": "external blog",
+                    "target": "ghs.google.com"
+                }
+            ],
+            "txtList": [
+                {
+                    "resourceName": "GoogSiteVerify",
+                    "comment": "google-site-verify",
+                    "txtValue": "\"google-site-verification=TkrkxKAe09zvCxBybnxzTKvuJUYp7eSYzM6KDBR4DgE\""
+                }
+            ],
+            "mxConfig": {
+                "resourceRecords": [
+                    "1 ASPMX.L.GOOGLE.COM",
+                    "5 ALT1.ASPMX.L.GOOGLE.COM",
+                    "5 ALT2.ASPMX.L.GOOGLE.COM",
+                    "10 ASPMX2.GOOGLEMAIL.COM",
+                    "10 ASPMX3.GOOGLEMAIL.COM"
+                ]
+            }
+        }
+    }
+}

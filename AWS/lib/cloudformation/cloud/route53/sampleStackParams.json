@@ -1,0 +1,73 @@
+{
+    "StackName": "sample-route53",
+    "Capabilities": [
+    ],
+    "TimeoutInMinutes": 5,
+    "EnableTerminationProtection": true,
+    "Parameters" : [
+        {
+            "ParameterKey": "DomainName",
+            "ParameterValue": "example.com"
+        }
+    ],
+    "Tags": [
+            {
+                "Key": "org",
+                "Value": "applications"
+            },
+            {
+                "Key": "project",
+                "Value": "cloud.frickjack.com"
+            },
+            {
+                "Key": "stack",
+                "Value": "reuben"
+            },
+            {
+                "Key": "stage",
+                "Value": "dev"
+            },
+            {
+              "Key": "role",
+              "Value": "dev"
+            }
+    ],
+    "Littleware": {
+        "TemplatePath": "lib/cloudformation/cloud/route53/route53.json",
+        "Variables": {
+            "aliasList": [
+                {
+                    "resourceName": "Lb1",
+                    "domainName": "lb1.example.com",
+                    "comment": "lb1",
+                    "target": "dualstack-some.loadbalancer.us-east-2.aws.com",
+                    "hostedZoneId": "Z2FDTNDATAQYW2"
+                }
+            ],
+            "cnameList": [
+                {
+                    "resourceName": "Blog",
+                    "domainName": "blog.example.com",
+                    "comment": "external blog",
+                    "target": "frickjack.blogger.com"
+                }
+            ],
+            "txtList": [
+                {
+                    "resourceName": "GoogSiteVerify",
+                    "comment": "google-site-verify",
+                    "txtValue": "\"google-site-verification=TkrkxKAe09zvCxBybnxzTKvuJUYp7eSYzM6KDBR4DgE\""
+                }
+            ],
+            "mxConfig": {
+                "resourceRecords": [
+                    "1 ASPMX.L.GOOGLE.COM",
+                    "5 ALT1.ASPMX.L.GOOGLE.COM",
+                    "5 ALT2.ASPMX.L.GOOGLE.COM",
+                    "10 ASPMX2.GOOGLEMAIL.COM",
+                    "10 ASPMX3.GOOGLEMAIL.COM"
+                ]
+            }
+        }
+    }
+}

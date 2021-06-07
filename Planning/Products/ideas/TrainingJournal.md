@@ -36,6 +36,7 @@ Mechanisms to:
 * discussion threads
 * search
 * track history and kpi/metrics
+* social - share streams with group
 
 Knowledge graph?  Mind map?  Evernote?
 
@@ -48,4 +49,6 @@ Knowledge graph?  Mind map?  Evernote?
 
 * https://slab.com/
 * https://coda.com
+* smart chips - https://support.google.com/docs/answer/10710316?hl=en
 * vs wikis, confluence, Microsoft Teams, github wiki, docs, ...
+
