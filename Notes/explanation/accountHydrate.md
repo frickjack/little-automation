@@ -71,15 +71,15 @@ mfa_serial = arn:aws:iam::123456789:mfa/bootstrap
 
 These instructions assume your command shell has access to the following tools: [bash](https://www.gnu.org/software/bash/), the [jq](https://stedolan.github.io/jq/) json tool, [git](https://git-scm.com/), and the [aws cli](https://aws.amazon.com/cli/).
 
-* download the cloudformation templates and helper scripts from our [git repository](https://github.com/frickjack/misc-stuff):
+* download the cloudformation templates and helper scripts from our [git repository](https://github.com/frickjack/little-automation):
 ```
-git clone https://github.com/frickjack/misc-stuff.git
+git clone https://github.com/frickjack/little-automation.git
 ```
 * add the `little` tool to your command path
 ```
 # assuming you're running a bash shell or similar
-alias little="bash $(pwd)/misc-stuff/AWS/little.sh"
-export LITTLE_HOME="$(pwd)/misc-stuff/AWS"
+alias little="bash $(pwd)/little-automation/AWS/little.sh"
+export LITTLE_HOME="$(pwd)/little-automation/AWS"
 ```
 
 * run the bootstrap script - it does the following:
@@ -96,11 +96,11 @@ little accountBootstrap
 * finally - prepare the inputs to our cloudformation stacks.
     - make a copy of the account-specific stack-parameters:
     ```
-    cp AWS/misc-stuff/db/frickjack AWS/misc-stuff/db/YOUR-ACCOUNT
+    cp AWS/little-automation/db/frickjack AWS/little-automation/db/YOUR-ACCOUNT
     ```
     - make whatever changes are appropriate for your account.  For example - change the 
-    SNS notify e-mail in [AWS/db/cloudformation/YourAccount/accountSetup/snsNotify.json](https://github.com/frickjack/misc-stuff/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/db/cloudformaton/frickjack/accountSetup/snsNotify.json#L7)
-    - customize the cloudformation templates under `misc-stuff/AWS/lib/cloudformation/` for your account.  For example - the `IamSetup.json` template sets up an IAM policy that allows access to `S3` and `lambda` and `APIGateway` API's, because I'm interested in those serverless technologies, but you may want to add permissions for accessing the `EC2` and `VPC` API's.
+    SNS notify e-mail in [AWS/db/cloudformation/YourAccount/accountSetup/snsNotify.json](https://github.com/frickjack/little-automation/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/db/cloudformaton/frickjack/accountSetup/snsNotify.json#L7)
+    - customize the cloudformation templates under `little-automation/AWS/lib/cloudformation/` for your account.  For example - the `IamSetup.json` template sets up an IAM policy that allows access to `S3` and `lambda` and `APIGateway` API's, because I'm interested in those serverless technologies, but you may want to add permissions for accessing the `EC2` and `VPC` API's.
 
 
 ## What's the idea?
@@ -149,7 +149,7 @@ acquire a temporary token directly.  Hopefully this authentication setup will pr
 
 ### Authorization
 
-Now that we have a mechanism to securely authenticate users and services that want to access AWS API's, how should we decide which privileges to grant different users?  Our [iamSetup](https://github.com/frickjack/misc-stuff/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/iamSetup.json) cloudformation stack sets up three groups of users each
+Now that we have a mechanism to securely authenticate users and services that want to access AWS API's, how should we decide which privileges to grant different users?  Our [iamSetup](https://github.com/frickjack/little-automation/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/iamSetup.json) cloudformation stack sets up three groups of users each
 associated with its own IAM role:
 * administrator
 * operator
@@ -224,10 +224,10 @@ way to decouple systems.
 load, response time, number of requests, whatever.  `Cloudwatch alarms` fire actions (lambda, SNS publication, ...)
 triggered by rules applied to metrics, events, and logs.
 
-For example - our cloudformation stack sets up a [`notifications` topic in SNS](https://github.com/frickjack/misc-stuff/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/snsNotifyTopic.json) that
+For example - our cloudformation stack sets up a [`notifications` topic in SNS](https://github.com/frickjack/little-automation/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/snsNotifyTopic.json) that
 our `cloudwatch alarms` publish to; and we setup alarms to send notifications
-when [changes are made to IAM](https://github.com/frickjack/misc-stuff/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/iamAlarm.json), or when the [`root` account is accessed](https://github.com/frickjack/misc-stuff/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/rootAccountAlarm.json), or when an account [approaches 
-its budget limit](https://github.com/frickjack/misc-stuff/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/budgetAlarm.json), or when AWS [guard duty detects something](https://github.com/frickjack/misc-stuff/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/guardDuty.json) ... that kind of thing.
+when [changes are made to IAM](https://github.com/frickjack/little-automation/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/iamAlarm.json), or when the [`root` account is accessed](https://github.com/frickjack/little-automation/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/rootAccountAlarm.json), or when an account [approaches 
+its budget limit](https://github.com/frickjack/little-automation/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/budgetAlarm.json), or when AWS [guard duty detects something](https://github.com/frickjack/little-automation/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/lib/cloudFormation/accountSetup/guardDuty.json) ... that kind of thing.
 
 
 ## Deploy the stacks
@@ -283,7 +283,7 @@ You can now deploy the following stacks as the new administrator user, and delet
 
 * setup cloudtrail
 
-Update the cloudtrail parameters ([AWS/db/cloudformation/YourAccount/accountSetup/cloudTrail.json](https://github.com/frickjack/misc-stuff/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/db/cloudformaton/frickjack/accountSetup/cloudTrail.json#L10)) with a bucket name unique to your account - something like `cloudtrail-management-$YourAccountName`.  You can retrieve the name of your account with `aws iam list-account-aliases`.
+Update the cloudtrail parameters ([AWS/db/cloudformation/YourAccount/accountSetup/cloudTrail.json](https://github.com/frickjack/little-automation/blob/e458983f39ed100c38ab254ea6d626725f13d796/AWS/db/cloudformaton/frickjack/accountSetup/cloudTrail.json#L10)) with a bucket name unique to your account - something like `cloudtrail-management-$YourAccountName`.  You can retrieve the name of your account with `aws iam list-account-aliases`.
 
 ```
 little stack create "$LITTLE_HOME/db/cloudformation/YourAccountNameHere/accountSetup/cloudTrail.json"

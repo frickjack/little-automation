@@ -16,7 +16,7 @@
         },
         {
             "ParameterKey": "GithubRepo",
-            "ParameterValue": "https://github.com/frickjack/misc-stuff.git"
+            "ParameterValue": "https://github.com/frickjack/little-automation.git"
         },
         {
             "ParameterKey": "SupportRepo",

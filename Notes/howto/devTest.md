@@ -19,7 +19,7 @@ The `AWS/little.sh` script is the entry point to a suite of
 command line automation tools.  We usually invoke the script
 through an alias:
 ```
-alias little='bash ~/Code/misc-stuff/AWS/little.sh'
+alias little='bash ~/Code/little-automation/AWS/little.sh'
 ```
 
 The `little` tool sets up some environment (AWS credentials, paths, etc), 
@@ -47,7 +47,7 @@ Each instantiation of a stack supplies parameters that customize the
 template for that particular stack's needs.  Because cloudformation
 templates do not natively provide the flexibility we need, we extend
 our templates with [nunjucks](https://mozilla.github.io/nunjucks/) rules  supported
-by our [little stack](https://github.com/frickjack/misc-stuff/blob/dev/AWS/doc/stack.md) tools.
+by our [little stack](https://github.com/frickjack/little-automation/blob/dev/AWS/doc/stack.md) tools.
 
 
 ```

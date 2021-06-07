@@ -1,6 +1,6 @@
 {
   "name": "@littleware/automation",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "placeholder for installing npm helper binaries",
   "main": "index.js",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/frickjack/misc-stuff.git"
+    "url": "git+https://github.com/frickjack/little-automation.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/frickjack/misc-stuff/issues"
+    "url": "https://github.com/frickjack/little-automation/issues"
   },
-  "homepage": "https://github.com/frickjack/misc-stuff#readme",
+  "homepage": "https://github.com/frickjack/little-automation#readme",
   "dependencies": {
     "jasmine": "^3.5.0"
   },
