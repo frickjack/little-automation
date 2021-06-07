@@ -1,6 +1,6 @@
 {
   "name": "@littleware/automation",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "placeholder for installing npm helper binaries",
   "main": "index.js",
   "scripts": {
