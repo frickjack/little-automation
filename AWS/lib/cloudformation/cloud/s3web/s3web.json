@@ -29,6 +29,16 @@
       "Properties": {
         "AccessControl": "Private",
         "BucketName": { "Fn::Join": [ "-", [ { "Ref" : "AWS::AccountId" }, { "Ref": "BucketSuffix" } ] ] },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration" : [ 
+            {
+              "BucketKeyEnabled" : "true",
+              "ServerSideEncryptionByDefault" : {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },        
         "WebsiteConfiguration": {
           "IndexDocument": "index.html",
           "ErrorDocument": "error.html"
