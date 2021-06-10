@@ -47,7 +47,7 @@
                     "resourceName": "Apps",
                     "domainName": "apps.frickjack.com",
                     "comment": "static web cloudfront alias",
-                    "target": "d1n6wy36dn8qay.cloudfront.net.",
+                    "target": "d3ejhkoukiejh7.cloudfront.net.",
                     "hostedZoneId": "Z2FDTNDATAQYW2"
                 },
                 {
