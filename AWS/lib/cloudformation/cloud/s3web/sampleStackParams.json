@@ -1,0 +1,48 @@
+{
+    "StackName": "sample-s3web",
+    "Capabilities": [
+    ],
+    "TimeoutInMinutes": 5,
+    "EnableTerminationProtection": true,
+    "Parameters" : [
+        {
+            "ParameterKey": "BucketSuffix",
+            "ParameterValue": "example-com"
+        },
+        {
+            "ParameterKey": "CertificateArn",
+            "ParameterValue": "arn:aws:acm:us-east-1:0123456789:certificate/xxxx-xxxx-xxxx"
+        },
+        {
+            "ParameterKey": "DomainName",
+            "ParameterValue": "example.com"
+        }
+    ],
+    "Tags": [
+            {
+                "Key": "org",
+                "Value": "applications"
+            },
+            {
+                "Key": "project",
+                "Value": "cloud.frickjack.com"
+            },
+            {
+                "Key": "stack",
+                "Value": "reuben"
+            },
+            {
+                "Key": "stage",
+                "Value": "dev"
+            },
+            {
+              "Key": "role",
+              "Value": "ux"
+            }
+    ],
+    "Littleware": {
+        "TemplatePath": "lib/cloudformation/cloud/s3web/s3web.json",
+        "Variables": {
+        }
+    }
+}

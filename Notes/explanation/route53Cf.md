@@ -6,7 +6,9 @@ Track route53 records with cloudformation.
 
 Managing route53 records with cloudformation is a good idea for the same reasons that tracking other resources with cloudformation (or terraform or whatever) is better than clicking around in the web console:
 
-* it is less work to manipulate route53 records by editing json files than clicking through the web console
+* it is less work to manipulate infrastructure by editing json files than clicking through the web console
+* a cloudformation template allows us to deploy multiple copies of our architecture (for different products, test environments, etc) in a consistent way
+* cloudformation templates capture best practices and institutional conventions, and allow infrastructure to evolve over time
 * tracking the cloudformation template and parameters in git gives an audit trail
 * cloudformation makes automation easy
 

@@ -1,0 +1,132 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Metadata": {
+    "License": "Apache-2.0"
+  },
+  "Description":
+    "Generalize AWS s3-cdn sample template from - https://github.com/awslabs/aws-cloudformation-templates/blob/master/aws/services/S3/S3_Website_With_CloudFront_Distribution.yaml",
+  "Parameters": {
+    "CertificateArn": {
+      "Type": "String",
+      "Description": "ACM Certificate ARN"
+    },
+    "DomainName": {
+      "Type": "String",
+      "Description": "The DNS name of the new cloudfront distro",
+      "AllowedPattern": "(?!-)[a-zA-Z0-9-.]{1,63}(?<!-)",
+      "ConstraintDescription": "must be a valid DNS zone name."
+    },
+    "BucketSuffix": {
+      "Type": "String",
+      "Description": "The suffix of the bucket name - prefix is account number",
+      "AllowedPattern": "[a-zA-Z0-9-]{1,63}",
+      "ConstraintDescription": "must be a valid S3-DNS name"
+    }
+  },
+  "Resources": {
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "Private",
+        "BucketName": { "Fn::Join": [ "-", [ { "Ref" : "AWS::AccountId" }, { "Ref": "BucketSuffix" } ] ] },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration" : [ 
+            {
+              "BucketKeyEnabled" : "true",
+              "ServerSideEncryptionByDefault" : {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },        
+        "WebsiteConfiguration": {
+          "IndexDocument": "index.html",
+          "ErrorDocument": "error.html"
+        },
+        "Tags": [
+          {{ stackTagsStr }}
+        ]
+      }
+    },
+    "CloudFrontOriginIdentity": {
+      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+      "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
+          "Comment": "origin identity"
+        }
+      }
+    },
+    "BucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": { "Ref": "S3Bucket" },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            { 
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": { "Fn::Sub": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginIdentity}" }
+              },
+              "Action": "s3:GetObject",
+              "Resource": { "Fn::Sub": "arn:aws:s3:::${S3Bucket}/*" }
+            }
+          ]
+        }
+      }
+    },
+    "CdnDistribution": {
+      "Type": "AWS::CloudFront::Distribution",
+      "Properties": {
+        "DistributionConfig": {
+          "Aliases": [
+            { "Ref": "DomainName" }
+          ],
+          "Origins": [
+            { 
+              "DomainName": { "Fn::Sub": "${S3Bucket}.s3.${AWS::Region}.amazonaws.com" },
+              "Id": "S3-private-bucket",
+              "S3OriginConfig": {
+                "OriginAccessIdentity": { "Fn::Sub": "origin-access-identity/cloudfront/${CloudFrontOriginIdentity}" }
+              }
+            }
+          ],
+          "DefaultRootObject": "index.html",
+          "Enabled": "true",
+          "Comment": { "Ref": "DomainName" },
+          "DefaultCacheBehavior": {
+            "AllowedMethods": [ "GET", "HEAD", "OPTIONS" ],
+            "CachedMethods": [ "GET", "HEAD", "OPTIONS" ],
+            "TargetOriginId": "S3-private-bucket",
+            "ForwardedValues": {
+              "QueryString": "false",
+              "Cookies": {
+                "Forward": "none"
+              }
+            },
+            "ViewerProtocolPolicy": "redirect-to-https"
+          },
+          "ViewerCertificate": {
+            "AcmCertificateArn": { "Ref": "CertificateArn" },
+            "SslSupportMethod": "sni-only",
+            "MinimumProtocolVersion": "TLSv1.2_2019"
+          }
+        },
+        "Tags": [
+          { "Key": "Name", "Value": { "Ref": "DomainName" } },
+          {{ stackTagsStr }}
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "CdnAliasDomain": {
+      "Value": { "Fn::GetAtt": [ "CdnDistribution", "DomainName" ] },
+      "Description": "The URL of the newly created website"
+    },
+    "BucketName": {
+      "Value": { "Ref": "S3Bucket" },
+      "Description": "Name of S3 bucket to hold website content"
+    }
+  }
+}
