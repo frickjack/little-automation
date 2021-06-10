@@ -15,6 +15,8 @@ Nothing here yet.
 * [CICD with CodeBuild](./Notes/explanation/codeBuildCICD.md)
 * [ECR setup](./Notes/explanation/ecrSetup.md)
 * [Cloudformation Patterns](./Notes/explanation/cfPatterns.md)
+* [Route53 in Cloudformation](./Notes/explanation/route53Cf.md)
+* [Jamstack in Cloudformation](./Notes/explanation/s3webCf.md)
 
 ### [how-tos](./Notes/howto)
 
