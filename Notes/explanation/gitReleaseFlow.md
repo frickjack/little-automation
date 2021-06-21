@@ -16,7 +16,7 @@ Each release has one or more release managers.  Managing a release is a three mo
 
 During development, the manager maintains the *dev* branch of the git repositories (see below).  She coordinates the deployment of the code to a test environment, and tracks the quality of the release through qa testing.
 
-Finally, during deployment the manager promotes the code to the git master branch (see below), then deploys the code to production, and patches bugs discovered in production if the fix cannot wait for the next release.
+Finally, during deployment the manager promotes the code to the git main branch (see below), then deploys the code to production, and patches bugs discovered in production if the fix cannot wait for the next release.
 
 In summary - each release progresses through a three month time boxed pipeline: planning and design, development and test, deployment and maintenance.  A release may be tracked as a Jira story that progresses through those states.
 
@@ -45,10 +45,10 @@ Or different managers might specialize in each phase of the pipeline, so each re
 
 ### Release branches
 
-Each git repository maintains two long lived branches - `master` and `dev` for tracking code in production and development respectively.  
+Each git repository maintains two long lived branches - `main` and `dev` for tracking code in production and development respectively.  
 The release manager approves all pull requests to the code in her release.  
 
-When a release progresses from development to deployment, its code moves from the `dev` branch to into `master`.  Patches (`major.minor.1`, `major.minor.2`, ...) to the `master` branch are only for bug fixes and security patches that must be deployed to production.
+When a release progresses from development to deployment, its code moves from the `dev` branch to into `main`.  Patches (`major.minor.1`, `major.minor.2`, ...) to the `main` branch are only for bug fixes and security patches that must be deployed to production.
 
 A feature is developed on a branch that merges into the `dev` branch for the next release after it passes QA.
 

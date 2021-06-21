@@ -6,7 +6,7 @@ helper for publishing web content to an s3 bucket
 
 I host a little website at [https://apps.frickjack.com](https://apps.frickjack.com) by publishing static web files to an S3 bucket behind a cloudfront CDN.  One way to improve the performance of an S3 web site is to configure each file's (s3 object) [content encoding](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) (gzip'ing the file if required), [content type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type), and [cache control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) at upload time (S3 natively specifies an [Etag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag)).
 
-Here's a little script that makes that easy (also at [https://github.com/frickjack/little-automation/blob/master/AWS/bin/s3web.sh](https://github.com/frickjack/little-automation/blob/master/AWS/bin/s3web.sh)), but rather than copy the script - you can install it like this:
+Here's a little script that makes that easy (also at [https://github.com/frickjack/little-automation/blob/main/AWS/bin/s3web.sh](https://github.com/frickjack/little-automation/blob/main/AWS/bin/s3web.sh)), but rather than copy the script - you can install it like this:
 
 ```
 git clone https://github.com/frickjack/little-automation.git

@@ -20,13 +20,13 @@ We have a handful of requirements for our jamstack infrastructure.  First we wan
 
 Most of our other requirements are addressed by adjusting knobs on our cloudfront configuration.  For example, we want all http traffic to be redirected to https.  We want to use an input parameter to our cloudformation stack to associate an alias domain with the distribution - we manage the DNS setup for the alias in another Route53 stack.  We use another input parameter to feed the ARN of our[ACM-managed](https://aws.amazon.com/certificate-manager/) TLS certificate.  We configure cloudfront to require clients to use TLS 1.2 or better.
 
-Finally, our [little stack](https://github.com/frickjack/little-automation/blob/master/AWS/doc/stack.md) tools make it easy to follow the tagging conventions that we want to enforce across our infrastructure.
+Finally, our [little stack](https://github.com/frickjack/little-automation/blob/main/AWS/doc/stack.md) tools make it easy to follow the tagging conventions that we want to enforce across our infrastructure.
 
 ## the little stack
 
-We setup the following template (also in [github](https://github.com/frickjack/little-automation/blob/master/AWS/lib/cloudformation/cloud/s3web/s3web.json)) to start managing our jamstack infrastructure with cloudformation.  The template takes advantage of the [nunjucks](https://mozilla.github.io/nunjucks/) extensions to cloudformation templates supported by our [little stack](https://github.com/frickjack/little-automation/blob/master/AWS/doc/stack.md) automation.
+We setup the following template (also in [github](https://github.com/frickjack/little-automation/blob/main/AWS/lib/cloudformation/cloud/s3web/s3web.json)) to start managing our jamstack infrastructure with cloudformation.  The template takes advantage of the [nunjucks](https://mozilla.github.io/nunjucks/) extensions to cloudformation templates supported by our [little stack](https://github.com/frickjack/little-automation/blob/main/AWS/doc/stack.md) automation.
 
-One "gotcha" that we ran into was that we originally intended to setup a new stack with the apps.frickjack.com domain alias already in use by our live CDN, copy our web content to the new bucket (modify our [codebuild](https://aws.amazon.com/codebuild/) CI pipeline [configuration](https://github.com/frickjack/little-apps/blob/master/buildspec.yml) to do that for us), then update DNS to point the apps.frickjack.com domain at the new CDN.  However, it turns out that cloudfront does not allow two distributions to have the same alias, so we setup our new CDN with a temporary alias, then took a few minutes of downtime while we removed the apps.frickjack.com alias from the old CDN, then updated our new stack.
+One "gotcha" that we ran into was that we originally intended to setup a new stack with the apps.frickjack.com domain alias already in use by our live CDN, copy our web content to the new bucket (modify our [codebuild](https://aws.amazon.com/codebuild/) CI pipeline [configuration](https://github.com/frickjack/little-apps/blob/main/buildspec.yml) to do that for us), then update DNS to point the apps.frickjack.com domain at the new CDN.  However, it turns out that cloudfront does not allow two distributions to have the same alias, so we setup our new CDN with a temporary alias, then took a few minutes of downtime while we removed the apps.frickjack.com alias from the old CDN, then updated our new stack.
 
 ```
 {
@@ -35,7 +35,7 @@ One "gotcha" that we ran into was that we originally intended to setup a new sta
     "License": "Apache-2.0"
   },
   "Description":
-    "Generalize AWS s3-cdn sample template from - https://github.com/awslabs/aws-cloudformation-templates/blob/master/aws/services/S3/S3_Website_With_CloudFront_Distribution.yaml",
+    "Generalize AWS s3-cdn sample template from - https://github.com/awslabs/aws-cloudformation-templates/blob/main/aws/services/S3/S3_Website_With_CloudFront_Distribution.yaml",
   "Parameters": {
     "CertificateArn": {
       "Type": "String",

@@ -36,7 +36,7 @@ little secret create the/secret/key "$(cat secretValue.json)"
 
 ### codebuild IAM setup
 
-Codebuild needs IAM credentials to allocate build resources.  [This](https://github.com/frickjack/little-automation/blob/master/AWS/lib/cloudformation/cicd/cicdIam.json) cloudformation template sets up a standard role that we'll pass to our builds:
+Codebuild needs IAM credentials to allocate build resources.  [This](https://github.com/frickjack/little-automation/blob/main/AWS/lib/cloudformation/cicd/cicdIam.json) cloudformation template sets up a standard role that we'll pass to our builds:
 
 ```
 {
@@ -180,7 +180,7 @@ little stack create "$LITTLE_HOME/AWS/db/cloudformation/YourAccount/cell0/cicd/c
 
 ### register a new build
 
-[This](https://github.com/frickjack/little-automation/blob/master/AWS/lib/cloudformation/cicd/nodeBuild.json) cloudformation template registers a new build that runs for pull requests and tag events on a github repository. 
+[This](https://github.com/frickjack/little-automation/blob/main/AWS/lib/cloudformation/cicd/nodeBuild.json) cloudformation template registers a new build that runs for pull requests and tag events on a github repository. 
 In addition to the primary repo the build also pulls in a secondary support repository that hosts our automation scripts.
 
 ```
@@ -318,7 +318,7 @@ little stack create "$LITTLE_HOME/AWS/db/cloudformation/YourAccount/cell0/cicd/n
 
 Codebuild expects a `buildspec.yaml` file in the
 code repository to contain the commands for a build.
-[This build file](https://github.com/frickjack/little-elements/blob/master/buildspec.yml) runs a [typescript](https://www.typescriptlang.org/) compile, unit tests, dependency security audit, and linting check.  If the build trigger is a tagging event, then the build goes on to publish the build's assets as a lambda layer and https://npm.org package.
+[This build file](https://github.com/frickjack/little-elements/blob/main/buildspec.yml) runs a [typescript](https://www.typescriptlang.org/) compile, unit tests, dependency security audit, and linting check.  If the build trigger is a tagging event, then the build goes on to publish the build's assets as a lambda layer and https://npm.org package.
 
 ```
 # see https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-codebuild-devicefarm.html

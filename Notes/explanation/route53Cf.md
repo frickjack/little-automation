@@ -12,7 +12,7 @@ Managing route53 records with cloudformation is a good idea for the same reasons
 * tracking the cloudformation template and parameters in git gives an audit trail
 * cloudformation makes automation easy
 
-We setup the following cloudformation template to start managing our simple route53 zones with cloudformation.  The template takes advantage of the [nunjucks](https://mozilla.github.io/nunjucks/) extensions to cloudformation templates supported by our [little stack](https://github.com/frickjack/little-automation/blob/master/AWS/doc/stack.md) automation.
+We setup the following cloudformation template to start managing our simple route53 zones with cloudformation.  The template takes advantage of the [nunjucks](https://mozilla.github.io/nunjucks/) extensions to cloudformation templates supported by our [little stack](https://github.com/frickjack/little-automation/blob/main/AWS/doc/stack.md) automation.
 
 ```
 {
