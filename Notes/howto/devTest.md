@@ -78,9 +78,9 @@ The [buildspec.yml](../../buildspec.yml) file defines a [codebuild](https://aws.
 Before publishing a new version - be sure to update both the [package version](../../package.json) and the [release notes](../reference/releaseNotes.md).
 
 The [codebuild](https://aws.amazon.com/codebuild/) integration in
-most of our repositories loads the `master` branch of this github
+most of our repositories loads the `main` branch of this github
 repo to access the `little` tools.  We also add a semver tag
-when we merge new code into the main branch; the git tag should match the module version in `package.json`.  Furthermore, we require that all git tags be applied to the `master` branch - which is our `release` branch in our simplified [gitflow](https://datasift.github.io/gitflow/IntroducingGitFlow.html)
+when we merge new code into the main branch; the git tag should match the module version in `package.json`.  Furthermore, we require that all git tags be applied to the `main` branch - which is our `release` branch in our simplified [gitflow](https://datasift.github.io/gitflow/IntroducingGitFlow.html)
 branching strategy.
 
 ```

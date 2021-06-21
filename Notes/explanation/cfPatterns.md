@@ -11,17 +11,17 @@ required for many cloud architectures, various
 extensions and template generators have emerged
 (like [CDK](https://aws.amazon.com/cdk/) 
 and [SAM](https://aws.amazon.com/serverless/sam/)).
-The [little stack](https://github.com/frickjack/little-automation/blob/master/AWS/doc/stack.md) tools allow the use of the [nunjucks](https://mozilla.github.io/nunjucks/) template language in cloudformation templates
+The [little stack](https://github.com/frickjack/little-automation/blob/main/AWS/doc/stack.md) tools allow the use of the [nunjucks](https://mozilla.github.io/nunjucks/) template language in cloudformation templates
 to support various infrastructure patterns.
 
 ## Overview of little tools
 
-The [little tools](https://github.com/frickjack/little-automation/blob/master/AWS/doc/README.md) include the [little stack](https://github.com/frickjack/little-automation/blob/master/AWS/doc/stack.md) helpers
-for deploying infrastructure defined by a declarative template file.  The little tools include their own [library](https://github.com/frickjack/little-automation/tree/master/AWS/lib/cloudformation) of cloudformation templates.  Ideally a template is defined in a
+The [little tools](https://github.com/frickjack/little-automation/blob/main/AWS/doc/README.md) include the [little stack](https://github.com/frickjack/little-automation/blob/main/AWS/doc/stack.md) helpers
+for deploying infrastructure defined by a declarative template file.  The little tools include their own [library](https://github.com/frickjack/little-automation/tree/main/AWS/lib/cloudformation) of cloudformation templates.  Ideally a template is defined in a
 generic way, but accepts input parameters that allow
 different stacks (like prod and dev) to be deployed, so a `(template.json, parameters.json)` pair defines each infrastructure stack.  The end user follows this workflow.
 
-* select a cloudformation template from the [library](https://github.com/frickjack/little-automation/tree/master/AWS/lib/cloudformation)
+* select a cloudformation template from the [library](https://github.com/frickjack/little-automation/tree/main/AWS/lib/cloudformation)
 * create a parameters json file defining the input variables that
 the template requires - the parameters file format extends
 the cli skeleton (from `aws cloudformation update-stack --generate-cli-skeleton`) with a `littleware` block - for example:
@@ -152,7 +152,7 @@ patterns that would be difficult with `cloudformation` alone.
 ### Template decomposition
 
 Splitting a large template between multiple files makes it
-easier to work with, and nunjucks' [import](https://mozilla.github.io/nunjucks/templating.html#import) directive provides the functionality to do that.  For example, the `root.json` file of this [api gateway](https://github.com/frickjack/little-automation/tree/master/AWS/lib/cloudformation/cloud/api/authclient) template imports separate files to define resources for each API accessed via the gateway.
+easier to work with, and nunjucks' [import](https://mozilla.github.io/nunjucks/templating.html#import) directive provides the functionality to do that.  For example, the `root.json` file of this [api gateway](https://github.com/frickjack/little-automation/tree/main/AWS/lib/cloudformation/cloud/api/authclient) template imports separate files to define resources for each API accessed via the gateway.
 
 ```
 {% import "./authnApiStage.js.njk" as authnApi with context %}
@@ -184,7 +184,7 @@ Resource versioning is a pattern that a few AWS API's
 (lambda, kms, and API gateway deployments anyway) rely on,
 but is not supported well by cloudformation.  For example,
 this [little template](https://github.com/frickjack/little-automation/blob/dev/AWS/lib/cloudformation/cloud/api/authclient/sessionMgrApiStage.js.njk)
-deploys infrastructure for littleware's session manager API.  The "beta" stage of the API is backed by a lambda function, and the "prod" stage of the API is backed by a lambda alias that references a lambda version (snapshot) of the same lambda function.  When a user wants to test new lambda code, she updates a variable in the parameters file to point at the Docker image with the new code (a sample parameters file is [here](https://github.com/frickjack/little-automation/blob/master/AWS/lib/cloudformation/cloud/api/authclient/sampleStackParams.json))
+deploys infrastructure for littleware's session manager API.  The "beta" stage of the API is backed by a lambda function, and the "prod" stage of the API is backed by a lambda alias that references a lambda version (snapshot) of the same lambda function.  When a user wants to test new lambda code, she updates a variable in the parameters file to point at the Docker image with the new code (a sample parameters file is [here](https://github.com/frickjack/little-automation/blob/main/AWS/lib/cloudformation/cloud/api/authclient/sampleStackParams.json))
 
 ```
 "Littleware": {
@@ -368,5 +368,5 @@ The kms alias names are passed as part of the json configuration to the session 
 
 ## Summary
 
-The [little stack](https://github.com/frickjack/little-automation/blob/master/AWS/doc/stack.md) tools allow the use of the [nunjucks](https://mozilla.github.io/nunjucks/) template language in cloudformation templates
+The [little stack](https://github.com/frickjack/little-automation/blob/main/AWS/doc/stack.md) tools allow the use of the [nunjucks](https://mozilla.github.io/nunjucks/) template language in cloudformation templates
 to support various infrastructure patterns.

@@ -26,8 +26,8 @@ release-tagged images are available for use (`docker pull`)
 in production accounts.
 
 With the above workflow in mind, we updated the cloudformation
-templates we use to setup our [user (admin, dev, operator)](https://github.com/frickjack/little-automation/blob/master/AWS/lib/cloudformation/accountSetup/iamSetup.json)
-and [codebuild (CI)](https://github.com/frickjack/little-automation/blob/master/AWS/lib/cloudformation/cicd/cicdIam.json) IAM roles
+templates we use to setup our [user (admin, dev, operator)](https://github.com/frickjack/little-automation/blob/main/AWS/lib/cloudformation/accountSetup/iamSetup.json)
+and [codebuild (CI)](https://github.com/frickjack/little-automation/blob/main/AWS/lib/cloudformation/cicd/cicdIam.json) IAM roles
 to grant full ECR access in our developer account 
 (currently we only have a dev account).
 

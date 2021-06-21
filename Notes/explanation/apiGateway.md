@@ -29,7 +29,7 @@ Systems like the following take different approaches to address this problem.
 * the [serverless framework](https://www.serverless.com/) provides tools that deploy serverless applications across different clouds from its own yaml configuration files
 * the [aws cloud development kit](https://aws.amazon.com/cdk/) provides software libraries for expressing cloudformation templates programatically
 
-We implement our own [little tools](https://github.com/frickjack/little-automation/tree/master/AWS/doc) that extend cloudformation templates with expressions (from the [nunjucks](https://mozilla.github.io/nunjucks/) template library) that can dynamically add resources to a stack based on variable values.
+We implement our own [little tools](https://github.com/frickjack/little-automation/tree/main/AWS/doc) that extend cloudformation templates with expressions (from the [nunjucks](https://mozilla.github.io/nunjucks/) template library) that can dynamically add resources to a stack based on variable values.
 The `little stack` tools consume a json stack definition
 with three main parts:
 * a reference to a clouformation template
@@ -40,7 +40,7 @@ If an optional `openapi.yaml` file is present, then its contents are also expose
 
 ## OIDC Client Example 
 
-Let's look in a little more detail at how we use the `little stack` and `little lambda` helpers to deploy [one stack](https://github.com/frickjack/little-automation/tree/master/AWS/db/cloudformation/frickjack/cell0/api/api.frickjack.com/authclient) that uses [this](https://github.com/frickjack/little-automation/tree/master/AWS/lib/cloudformation/cellSetup/api/authclient) nunjucks-extended cloudformation template.
+Let's look in a little more detail at how we use the `little stack` and `little lambda` helpers to deploy [one stack](https://github.com/frickjack/little-automation/tree/main/AWS/db/cloudformation/frickjack/cell0/api/api.frickjack.com/authclient) that uses [this](https://github.com/frickjack/little-automation/tree/main/AWS/lib/cloudformation/cellSetup/api/authclient) nunjucks-extended cloudformation template.
 The OIDC API fits into a larger appliction infrastructure with these components:
 
 * a cognito identity provider - `auth.domain`
@@ -66,7 +66,7 @@ specify the location of the code package to deploy to the lambda function.  We d
 ### Configuration
 
 The `authclient/` cloudformation template expects the lambda function's configuration to be saved as json in an [SSM parameter](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html).
-The `little ssm` helper simplifies saving a new parameter, and the [little-authn documentation](https://github.com/frickjack/little-authn/blob/master/Notes/howto/devTest.md#configuration) has details about the expected configuration.
+The `little ssm` helper simplifies saving a new parameter, and the [little-authn documentation](https://github.com/frickjack/little-authn/blob/main/Notes/howto/devTest.md#configuration) has details about the expected configuration.
 
 The lambda receives its configuration as an environment variable.  The adapter code in `code/index.js` customizes the configuration depending on which stage is executing.
 
