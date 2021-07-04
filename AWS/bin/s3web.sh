@@ -49,6 +49,9 @@ s3webPath2ContentType() {
         *.md)
             echo "text/markdown; charset=utf-8"
             ;;
+        *.mp3)
+            echo "audio/mpeg"
+            ;;
         *)
             echo "text/plain; charset=utf-8"
             ;;
@@ -102,6 +105,9 @@ s3webPublish() {
             cacheControl="max-age=3600000, public"
             destPath="${destPrefix%/}/${filePath#./}"
             if [[ "$ctype" =~ ^image/ && ! "$ctype" =~ ^image/svg ]]; then
+                encoding=""
+            fi
+            if [[ "$ctype" =~ ^audio/ ]]; then
                 encoding=""
             fi
             if [[ "$ctype" =~ ^text/html || "$ctype" =~ ^application/json ]]; then
