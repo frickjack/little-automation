@@ -143,7 +143,7 @@ associated with the session manager API
         "Description" : "session manager API lambda",
         "Environment" : {
           "Variables": {
-            "JAVA_TOOL_OPTIONS": "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager",
+            "JAVA_TOOL_OPTIONS": "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -Dguice_bytecode_gen_option=DISABLED",
             "LITTLE_CLOUDMGR": {{
               {
                 "little.cloudmgr.domain" : stackVariables.sessmgr.cloudDomain,
