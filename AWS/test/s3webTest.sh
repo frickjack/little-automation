@@ -19,6 +19,7 @@ testS3webContentType() {
     md "text/markdown; charset=utf-8"
     txt "text/plain; charset=utf-8"
     mjs "application/javascript; charset=utf-8"
+    mp3 "audio/mpeg"
   )
   local testCount=${#testList[@]}
   for ((it=0; it < testCount-1; it=it+2)); do

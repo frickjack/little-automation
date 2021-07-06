@@ -38,3 +38,8 @@ Get the image-scan report for the given image
 little ecr scanreport little/session_mgr latest
 ```
 
+## AWS Cheat Sheet
+
+```
+aws ecr list-images --repository-name little/session_mgr
+```
