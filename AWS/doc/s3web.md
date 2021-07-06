@@ -19,3 +19,20 @@ Ex:
 ```
 $ little s3web publish ./dist/ s3://web-bucket/
 ```
+
+### cp
+
+Same as `publish`, but for individual files.
+
+Ex:
+```
+$ little s3web cp ./audio/podcast.mp3 s3://web-bucket/audio/podcast.mp3
+```
+
+### content-type
+
+Helper to check what content-type `cp` and `publish` would attach to the file based on the file's suffix.
+
+```
+$ little s3web content-type path/to/file
+```
