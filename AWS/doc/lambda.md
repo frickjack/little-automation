@@ -1,6 +1,6 @@
 # TL;DR
 
-gitops aware heper for interacting with AWS lambda
+gitops aware helper for interacting with AWS lambda
 
 ## Use
 
@@ -36,7 +36,7 @@ $ little lambda log-streams my-function-name
 
 ### log-events functionName [functionVersion=$LATEST]
 
-Retrive the log events from the most recent log stream returned by `log-streams` (above)
+Retrieve the log events from the most recent log stream returned by `log-streams` (above)
 
 ```
 $ little lambda log-events my-function-name

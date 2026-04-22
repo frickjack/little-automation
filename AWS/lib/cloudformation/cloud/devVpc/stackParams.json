@@ -1,0 +1,13 @@
+{
+  "StackName": "devVpc-test",
+  "Parameters": [
+    { "ParameterKey": "WhitelistIpV4", "ParameterValue": "0.0.0.0/0" }
+  ],
+  "Tags": [
+    { "Key": "org", "Value": "littleware" },
+    { "Key": "project", "Value": "test" }
+  ],
+  "Littleware": {
+    "TemplatePath": "AWS/lib/cloudformation/cloud/devVpc/devVpc.json"
+  }
+}
