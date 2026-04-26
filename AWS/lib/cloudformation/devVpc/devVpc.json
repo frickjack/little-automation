@@ -14,7 +14,7 @@
     "WhitelistIpV6": {
       "Type": "String",
       "Description": "IPv6 CIDR for external access to specified ports (e.g., ::/0)",
-      "Default": "::/0",
+      "Default": "fd00::/8",
       "ConstraintDescription": "must be a valid IPv6 CIDR range."
     },
     "InstanceType": {
@@ -31,7 +31,15 @@
       "Type": "CommaDelimitedList",
       "Description": "Comma-separated list of public SSH keys to authorize for ec2-user",
       "Default": ""
+    },
+    "ReubenIamRoleName": {
+      "Type": "String",
+      "Description": "The name of the IAM role to associate with the instance",
+      "Default": ""
     }
+  },
+  "Conditions": {
+    "HasIamRole": { "Fn::Not": [ { "Fn::Equals": [ { "Ref": "ReubenIamRoleName" }, "" ] } ] }
   },
   "Resources": {
     "VPC": {
@@ -159,9 +167,17 @@
         ]
       }
     },
-    "DevInstance": {
+    "ReubenDevInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Condition": "HasIamRole",
+      "Properties": {
+        "Roles": [ { "Ref": "ReubenIamRoleName" } ]
+      }
+    },
+    "ReubenDevInstance": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
+        "IamInstanceProfile": { "Fn::If": [ "HasIamRole", { "Ref": "ReubenDevInstanceProfile" }, { "Ref": "AWS::NoValue" } ] },
         "InstanceType": { "Ref": "InstanceType" },
         "ImageId": { "Ref": "AmiId" },
         "SubnetId": { "Ref": "PublicSubnet" },
@@ -171,6 +187,13 @@
             "DeviceName": "/dev/xvda",
             "Ebs": {
               "VolumeSize": 20,
+              "Encrypted": true
+            }
+          },
+          {
+            "DeviceName": "/dev/sdb",
+            "Ebs": {
+              "VolumeSize": 100,
               "Encrypted": true
             }
           }
@@ -202,12 +225,12 @@
       "Value": { "Ref": "VPC" },
       "Description": "VPC ID"
     },
-    "InstancePublicIp": {
-      "Value": { "Fn::GetAtt": [ "DevInstance", "PublicIp" ] },
+    "ReubenDevInstancePublicIp": {
+      "Value": { "Fn::GetAtt": [ "ReubenDevInstance", "PublicIp" ] },
       "Description": "Public IPv4 address of the dev instance"
     },
-    "InstancePublicIpv6": {
-      "Value": { "Fn::Select": [ 0, { "Fn::GetAtt": [ "DevInstance", "Ipv6Addresses" ] } ] },
+    "ReubenDevInstancePublicIpv6": {
+      "Value": { "Fn::Select": [ 0, { "Fn::GetAtt": [ "ReubenDevInstance", "Ipv6Addresses" ] } ] },
       "Description": "Public IPv6 address of the dev instance"
     }
   }

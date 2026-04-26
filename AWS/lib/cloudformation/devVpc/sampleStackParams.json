@@ -1,7 +1,9 @@
 {
   "StackName": "devVpc-test",
   "Parameters": [
-    { "ParameterKey": "WhitelistIpV4", "ParameterValue": "10.0.0.1/32" }
+    { "ParameterKey": "WhitelistIpV4", "ParameterValue": "10.0.0.1/32" },
+    { "ParameterKey": "WhitelistIpV6", "ParameterValue": "fd00::/8" },
+    { "ParameterKey": "ReubenIamRoleName", "ParameterValue": "littleware/account/user/littleDeveloper" }
   ],
   "Tags": [
     {

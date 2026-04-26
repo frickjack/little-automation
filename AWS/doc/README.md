@@ -37,7 +37,7 @@ little env | grep AWS_
 ```
 
 A developer laptop might have the
-following AWS config that requires multifactor
+following AWS config that requires multi-factor
 authentication.
 
 ```
@@ -58,6 +58,12 @@ region = us-east-2
 role_arn = arn:aws:iam::XXXXXXXXX:role/littleware/account/user/littleAdmin
 source_profile = default
 mfa_serial = arn:aws:iam::XXXXXXXXX:mfa/frickjack
+
+[profile dev-ohio]
+region = us-east-2
+role_arn = arn:aws:iam::XXXXXX:role/littleware/account/user/littleDeveloper
+source_profile = default
+mfa_serial = arn:aws:iam::XXXXXXX:mfa/frickjack
 
 ```
 
