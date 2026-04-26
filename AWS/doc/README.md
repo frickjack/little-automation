@@ -19,7 +19,7 @@ alias little='bash ~/Code/little-automation/AWS/little.sh'
 
 ### Credentials
 
-The `little` commands require AWS credentials to interact with the AWS API.  There are a variety of ways to configure the AWS SDK - the [account setup notes](../../Notes/explanation/accountHydrate.md) have more details.
+The `little` commands require AWS credentials to interact with the AWS API.  There are a variety of ways to configure the AWS SDK - the [account setup notes](../../Notes/Resources/explanation/accountHydrate.md) have more details.
 
 ## Overview
 

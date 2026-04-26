@@ -10,7 +10,7 @@ const confHelper = require("@littleware/little-authn/commonjs/bin/oidcClient/con
  *  "value": "{ ... }"
  * }
  * 
- * The [little-authn documentation](https://github.com/frickjack/little-authn/tree/master/Notes/howto/devTest.md)
+ * The [little-authn documentation](https://github.com/frickjack/little-authn/tree/master/Notes/Resources/howto/devTest.md)
  * has details on the format of the auth configuration value.
  */
 const loadRule = JSON.parse(process.env.LITTLE_AUTHN_CONFIG || "null");

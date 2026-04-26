@@ -13,7 +13,7 @@ The templates in this folder manage the infrastructure and deployment for `api.d
 
 ## API and Process Overview
 
-This [docmentation](../../../../../Notes/explanation/apiGateway.md) introduces littleware's approach to API gateway.
+This [docmentation](../../../../../Notes/Resources/explanation/apiGateway.md) introduces littleware's approach to API gateway.
 
 
 ## Tests
