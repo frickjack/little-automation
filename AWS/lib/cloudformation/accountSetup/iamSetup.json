@@ -51,7 +51,10 @@
             "arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess",
             "arn:aws:iam::aws:policy/AWSWAFConsoleReadOnlyAccess",
             "arn:aws:iam::aws:policy/AWSCloudShellFullAccess",
-            "arn:aws:iam::aws:policy/AWSCloud9User"
+            "arn:aws:iam::aws:policy/AWSCloud9User",
+            "arn:aws:iam::aws:policy/AmazonVPCReadOnlyAccess",
+            "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
+
           ],
           "MaxSessionDuration" : 3600,
           "Path" : "/littleware/account/user/",
@@ -99,7 +102,8 @@
               "arn:aws:iam::aws:policy/IAMFullAccess",
               "arn:aws:iam::aws:policy/AWSWAFConsoleReadOnlyAccess",
               "arn:aws:iam::aws:policy/AWSCloudShellFullAccess",
-              "arn:aws:iam::aws:policy/AWSCloud9Administrator"
+              "arn:aws:iam::aws:policy/AWSCloud9Administrator",
+              "arn:aws:iam::aws:policy/AWSServiceCatalogAdminReadOnlyAccess"
           ],
           "MaxSessionDuration" : 3600,
           "Path" : "/littleware/account/user/",
@@ -454,6 +458,7 @@
                   "codecommit:*",
                   "codepipeline:*",
                   "dynamodb:*",
+                  "ec2:*",
                   "ecr:*",
                   "events:*",
                   "guardduty:*",

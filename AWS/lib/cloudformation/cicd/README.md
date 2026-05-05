@@ -9,17 +9,14 @@ This folder has two cloudformation templates to setup codebuild:
 * cicdIam.json - sets up IAM role used by ..
 * nodeBuild.json - sets up codebuild resource for a github repo
 
-The build requires access to a github secret:
+The build requires access to a github token:
 
-* setup github access token (see https://docs.aws.amazon.com/codebuild/latest/userguide/sample-access-tokens.html).  Save the token in AWS secrets manager as a secret string with form:
+* setup github access token (see https://docs.aws.amazon.com/codebuild/latest/userguide/sample-access-tokens.html).  Save the token in AWS ssm:
 
-```
-{ "token": "the-token-value" }
-```
 
 ex:
 ```
-little secret create applications/cicd/cell0/dev/github-token '{ "token": "the-token-value" }' 'github access token'
+little ssm put-parameter dev.cicd.main.active.github-token "$ghToken" "github token expires 2027/02"
 ```
 
 ## cicdIam permissions

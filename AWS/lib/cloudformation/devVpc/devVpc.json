@@ -28,18 +28,10 @@
       "Description": "The AMI ID for the instance. Defaults to the latest Amazon Linux 2023 ARM64 AMI."
     },
     "AuthorizedKeys": {
-      "Type": "CommaDelimitedList",
+      "Type": "String",
       "Description": "Comma-separated list of public SSH keys to authorize for ec2-user",
       "Default": ""
-    },
-    "ReubenIamRoleName": {
-      "Type": "String",
-      "Description": "The name of the IAM role to associate with the instance",
-      "Default": ""
     }
-  },
-  "Conditions": {
-    "HasIamRole": { "Fn::Not": [ { "Fn::Equals": [ { "Ref": "ReubenIamRoleName" }, "" ] } ] }
   },
   "Resources": {
     "VPC": {
@@ -133,51 +125,18 @@
         "RouteTableId": { "Ref": "RouteTable" }
       }
     },
-    "InstanceSecurityGroup": {
-      "Type": "AWS::EC2::SecurityGroup",
-      "Properties": {
-        "GroupDescription": "Security group for dev instance with restricted external access and unrestricted internal access",
-        "VpcId": { "Ref": "VPC" },
-        "SecurityGroupIngress": [
-          { "IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "CidrIp": { "Ref": "WhitelistIpV4" } },
-          { "IpProtocol": "tcp", "FromPort": 8080, "ToPort": 8080, "CidrIp": { "Ref": "WhitelistIpV4" } },
-          { "IpProtocol": "tcp", "FromPort": 8443, "ToPort": 8443, "CidrIp": { "Ref": "WhitelistIpV4" } },
-          { "IpProtocol": "tcp", "FromPort": 9080, "ToPort": 9080, "CidrIp": { "Ref": "WhitelistIpV4" } },
-          { "IpProtocol": "tcp", "FromPort": 9443, "ToPort": 9443, "CidrIp": { "Ref": "WhitelistIpV4" } },
-          { "IpProtocol": "tcp", "FromPort": 10080, "ToPort": 10080, "CidrIp": { "Ref": "WhitelistIpV4" } },
-          { "IpProtocol": "tcp", "FromPort": 10443, "ToPort": 10443, "CidrIp": { "Ref": "WhitelistIpV4" } },
-          
-          { "IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
-          { "IpProtocol": "tcp", "FromPort": 8080, "ToPort": 8080, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
-          { "IpProtocol": "tcp", "FromPort": 8443, "ToPort": 8443, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
-          { "IpProtocol": "tcp", "FromPort": 9080, "ToPort": 9080, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
-          { "IpProtocol": "tcp", "FromPort": 9443, "ToPort": 9443, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
-          { "IpProtocol": "tcp", "FromPort": 10080, "ToPort": 10080, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
-          { "IpProtocol": "tcp", "FromPort": 10443, "ToPort": 10443, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
 
-          { "IpProtocol": "-1", "SourceSecurityGroupId": { "Fn::GetAtt": [ "InstanceSecurityGroup", "GroupId" ] }, "Description": "Allow unrestricted internal access" }
-        ],
-        "SecurityGroupEgress": [
-          { "IpProtocol": "-1", "CidrIp": "0.0.0.0/0", "Description": "Allow all outbound IPv4" },
-          { "IpProtocol": "-1", "CidrIpv6": "::/0", "Description": "Allow all outbound IPv6" }
-        ],
-        "Tags": [
-          { "Key": "Name", "Value": "devVpc-sg" },
-          {{ stackTagsStr }}
-        ]
-      }
-    },
-    "ReubenDevInstanceProfile": {
+    {% for vm in stackVariables.vmList %}
+    "{{ vm.name }}InstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
-      "Condition": "HasIamRole",
       "Properties": {
-        "Roles": [ { "Ref": "ReubenIamRoleName" } ]
+        "Roles": [ "{{ vm.roleName }}" ]
       }
     },
-    "ReubenDevInstance": {
+    "{{ vm.name }}Instance": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
-        "IamInstanceProfile": { "Fn::If": [ "HasIamRole", { "Ref": "ReubenDevInstanceProfile" }, { "Ref": "AWS::NoValue" } ] },
+        "IamInstanceProfile": { "Fn::If": [ "HasIamRole", { "Ref": "{{ vm.name }}InstanceProfile" }, { "Ref": "AWS::NoValue" } ] },
         "InstanceType": { "Ref": "InstanceType" },
         "ImageId": { "Ref": "AmiId" },
         "SubnetId": { "Ref": "PublicSubnet" },
@@ -214,24 +173,63 @@
           }
         },
         "Tags": [
-          { "Key": "Name", "Value": "devVpc-instance" },
+          { "Key": "Name", "Value": "{{ vm.name }}" },
+          {{ stackTagsStr }}
+        ]
+      }
+    },
+    {% endfor %}
+
+    "InstanceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security group for dev instance with restricted external access and unrestricted internal access",
+        "VpcId": { "Ref": "VPC" },
+        "SecurityGroupIngress": [
+          { "IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "CidrIp": { "Ref": "WhitelistIpV4" } },
+          { "IpProtocol": "tcp", "FromPort": 8080, "ToPort": 8080, "CidrIp": { "Ref": "WhitelistIpV4" } },
+          { "IpProtocol": "tcp", "FromPort": 8443, "ToPort": 8443, "CidrIp": { "Ref": "WhitelistIpV4" } },
+          { "IpProtocol": "tcp", "FromPort": 9080, "ToPort": 9080, "CidrIp": { "Ref": "WhitelistIpV4" } },
+          { "IpProtocol": "tcp", "FromPort": 9443, "ToPort": 9443, "CidrIp": { "Ref": "WhitelistIpV4" } },
+          { "IpProtocol": "tcp", "FromPort": 10080, "ToPort": 10080, "CidrIp": { "Ref": "WhitelistIpV4" } },
+          { "IpProtocol": "tcp", "FromPort": 10443, "ToPort": 10443, "CidrIp": { "Ref": "WhitelistIpV4" } },
+          
+          { "IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
+          { "IpProtocol": "tcp", "FromPort": 8080, "ToPort": 8080, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
+          { "IpProtocol": "tcp", "FromPort": 8443, "ToPort": 8443, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
+          { "IpProtocol": "tcp", "FromPort": 9080, "ToPort": 9080, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
+          { "IpProtocol": "tcp", "FromPort": 9443, "ToPort": 9443, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
+          { "IpProtocol": "tcp", "FromPort": 10080, "ToPort": 10080, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
+          { "IpProtocol": "tcp", "FromPort": 10443, "ToPort": 10443, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
+
+          { "IpProtocol": "-1", "CidrIp": { "Fn::GetAtt": [ "PublicSubnet", "CidrBlock" ] }, "Description": "Allow unrestricted internal access from public subnet IPv4" },
+          { "IpProtocol": "-1", "CidrIpv6": { "Fn::Select": [ 0, { "Fn::GetAtt": [ "PublicSubnet", "Ipv6CidrBlocks" ] } ] }, "Description": "Allow unrestricted internal access from public subnet IPv6" }
+        ],
+        "SecurityGroupEgress": [
+          { "IpProtocol": "-1", "CidrIp": "0.0.0.0/0", "Description": "Allow all outbound IPv4" },
+          { "IpProtocol": "-1", "CidrIpv6": "::/0", "Description": "Allow all outbound IPv6" }
+        ],
+        "Tags": [
+          { "Key": "Name", "Value": "devVpc-sg" },
           {{ stackTagsStr }}
         ]
       }
     }
   },
   "Outputs": {
+    {% for vm in stackVariables.vmList %}
+    "{{ vm.name }}InstancePublicIp": {
+      "Value": { "Fn::GetAtt": [ "{{ vm.name }}Instance", "PublicIp" ] },
+      "Description": "Public IPv4 address of the dev instance"
+    },
+    "{{ vm.name }}InstancePublicIpv6": {
+      "Value": { "Fn::Select": [ 0, { "Fn::GetAtt": [ "{{ vm.name }}Instance", "Ipv6Addresses" ] } ] },
+      "Description": "Public IPv6 address of the dev instance"
+    },
+    {% endfor %}
     "VpcId": {
       "Value": { "Ref": "VPC" },
       "Description": "VPC ID"
-    },
-    "ReubenDevInstancePublicIp": {
-      "Value": { "Fn::GetAtt": [ "ReubenDevInstance", "PublicIp" ] },
-      "Description": "Public IPv4 address of the dev instance"
-    },
-    "ReubenDevInstancePublicIpv6": {
-      "Value": { "Fn::Select": [ 0, { "Fn::GetAtt": [ "ReubenDevInstance", "Ipv6Addresses" ] } ] },
-      "Description": "Public IPv6 address of the dev instance"
     }
   }
 }
