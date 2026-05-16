@@ -8,7 +8,7 @@ CICD is awesome.  It automates the tasks we want to perform whenever we push cod
 * run unit tests
 * publish artifacts
 
-There are a lot of great options for implementing CICD too.  On-prem systems like [Jenkins](https://jenkins.io) and [Team City](https://www.jetbrains.com/teamcity/), and SAAS systems like [Travis](https://travis-ci.com/), [CircleCI](https://circleci.com/), and [Github Actions](https://github.com/features/actions).  For my personal projects I wanted a SAAS solution that triggers on github PR's and integrates with AWS, so I setup a [CodeBuild](https://aws.amazon.com/codebuild/) process that I'm pretty happy with.
+There are a lot of great options for implementing CICD too.  I want a SAAS solution that triggers on github PR's and integrates with AWS, so I setup a [CodeBuild](https://aws.amazon.com/codebuild/) process that I'm pretty happy with.
 
 
 ## Codebuild Setup
