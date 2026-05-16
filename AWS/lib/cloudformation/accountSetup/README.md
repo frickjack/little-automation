@@ -2,5 +2,5 @@
 
 Cloudformation templates to bootstrap a new account.
 
-Read [accountHydrate.md](../../../../Notes/Resources/explanation/accountHydrate.md) for all the details
+Read [accountHydrate.md](../../../../Notes/Areas/explanation/accountHydrate.md) for all the details
 

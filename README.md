@@ -17,26 +17,26 @@ Projects will eventually move to the archive, so don't bookmark them.
 
 ### [archives](./Notes/Archives)
 
-### [resources](./Notes/Resources)
+### [resources](./Notes/Areas)
 
-#### [tutorials](./Notes/Resources/tutorial)
+#### [tutorials](./Notes/Areas/tutorial)
 
-#### [explanation](./Notes/Resources/explanation)
+#### [explanation](./Notes/Areas/explanation)
 
-* [Hydrating a new AWS Account](./Notes/resources/explanation/accountHydrate.md)
-* [Littleware and API Gateway](./Notes/resources/explanation/apiGateway.md)
-* [CICD with CodeBuild](./Notes/resources/explanation/codeBuildCICD.md)
-* [ECR setup](./Notes/resources/explanation/ecrSetup.md)
-* [Cloudformation Patterns](./Notes/resources/explanation/cfPatterns.md)
-* [Route53 in Cloudformation](./Notes/resources/explanation/route53Cf.md)
-* [Jamstack in Cloudformation](./Notes/resources/explanation/s3webCf.md)
+* [Hydrating a new AWS Account](./Notes/Areas/explanation/accountHydrate.md)
+* [Littleware and API Gateway](./Notes/Areas/explanation/apiGateway.md)
+* [CICD with CodeBuild](./Notes/Areas/explanation/codeBuildCICD.md)
+* [ECR setup](./Notes/Areas/explanation/ecrSetup.md)
+* [Cloudformation Patterns](./Notes/Areas/explanation/cfPatterns.md)
+* [Route53 in Cloudformation](./Notes/Areas/explanation/route53Cf.md)
+* [Jamstack in Cloudformation](./Notes/Areas/explanation/s3webCf.md)
 
-#### [how-tos](./Notes/Resources/howto)
+#### [how-tos](./Notes/Areas/howto)
 
-* [WIP - Contributing to Littleware](./Notes/Resources/howto/littleContribute.md)
-* [dev-test](./Notes/Resources/howto/devTest.md)
+* [WIP - Contributing to Littleware](./Notes/Areas/howto/littleContribute.md)
+* [dev-test](./Notes/Areas/howto/devTest.md)
 
-#### [reference](./Notes/Resources/reference)
+#### [reference](./Notes/Areas/reference)
 
-* [Release Notes](./Notes/Resources/reference/releaseNotes.md)
-* [little commands](./Notes/Resources/reference/littleCommands.md)
+* [Release Notes](./Notes/Areas/reference/releaseNotes.md)
+* [little commands](./Notes/Areas/reference/littleCommands.md)
