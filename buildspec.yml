@@ -1,12 +1,19 @@
 # see https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-codebuild-devicefarm.html
 version: 0.2
 
+env:
+  parameter-store:
+    # Fetches the SecureString from SSM and maps it to GITHUB_TOKEN
+    GITHUB_TOKEN: "dev.cicd.main.active.github-token"
+
 phases:
   install:
     runtime-versions:
       nodejs: 24
     commands:
       - echo "Entered the install phase - jq already installed ..."
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=overlay &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
       #- apt-get update -y
       #- apt-get install -y jq
   pre_build:
@@ -16,10 +23,60 @@ phases:
       - echo "//registry.npmjs.org/:_authToken=$(echo "$NPM_TOKEN" | jq -e -r .token)" > "$HOME/.npmrc"
       - mkdir -p "$HOME/.aws"; /bin/echo -e "[default]\nregion = ${AWS_REGION}\noutput = json\ncredential_source = Ec2InstanceMetadata\n" | tee "$HOME/.aws/config"
       - npm ci
-      - git config --global user.email frickjack
-      - git config --global user.name frickjack
       - pip install yq --upgrade
+      - echo "Configuring Git authentication..."
+      # Extracts the repository URL format dynamically from the CodeBuild environment
+      - REPO_URL=$(git config --get remote.origin.url | sed 's|https://||')
+      # Re-configures the origin URL to securely inject the GitHub token
+      - git remote set-url origin "https://${GITHUB_TOKEN}@${REPO_URL}"
+      # Sets required Git identity configs to prevent commit/tag errors
+      - git config --global user.name "AWS CodeBuild"
+      - git config --global user.email "codebuild@amazonaws.com"
   build:
     commands:
       - bash AWS/little.sh testsuite
       - npm audit --audit-level=high
+  post_build:
+    commands:
+      - |
+        (
+          set -ex
+          if [ "$CODEBUILD_BUILD_SUCCEEDING" = 0 ]; then
+              # post_build stage always runs - other stages do not run on failure
+              echo "build failed, skipping post_build"
+              exit 0
+          fi
+          BUILD_TYPE="MANUAL"
+          if [ -n "$CODEBUILD_WEBHOOK_TRIGGER" ]; then
+            # Note: codebuild sh does not support <<<
+            BUILD_TYPE="$(echo "$CODEBUILD_WEBHOOK_TRIGGER" | awk -F / '{ print $1 }')"
+          fi
+          echo "BUILD_TYPE is $BUILD_TYPE"
+          if [ "$BUILD_TYPE" != "branch" ]; then
+              echo "build-type is not branch, skipping post_build: $CODEBUILD_WEBHOOK_TRIGGER"
+              exit 0
+          fi
+
+          little() {
+              bash "AWS/little.sh" "$@"
+          }
+          
+          LITTLE_REPO_NAME=little/automation
+          LITTLE_DOCKER_REG="$(little ecr registry)" || exit 1
+          LITTLE_DOCKER_REPO="${LITTLE_DOCKER_REG}/${LITTLE_REPO_NAME}"
+          PATCH_OFFSET=44
+          PATCH_VERSION="$((CODEBUILD_BUILD_NUMBER - PATCH_OFFSET))"
+          MAJOR=1
+          DEV_MINOR=3
+          BRANCH_NAME="$(little codebuild branch-name)"
+          TAG_NAME="$(little codebuild tag-name $MAJOR $DEV_MINOR $PATCH_VERSION "$BRANCH_NAME")"
+          
+          if test -n "$TAG_NAME"; then
+            little ecr login || exit 1
+            echo "Creating and pushing Git tag: $TAG_NAME"
+            git tag -a "$TAG_NAME" -m "Automated build tag from CodeBuild run $CODEBUILD_BUILD_NUMBER"
+            git push origin "$TAG_NAME"
+          else
+            echo "not tagging on branch $BRANCH_NAME"
+          fi
+        )

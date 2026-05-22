@@ -16,5 +16,10 @@ little ssm put-param org.project.stack.stage.role $value $description
 
 Retrieve a parameter value with `aws ssm get-parameter` - ex:
 ```
-aws ssm get-parameter --name $paramName --with-decryption
+little aws ssm get-parameter --name $paramName --with-decryption
+```
+
+Describe available parameters:
+```
+little aws ssm describe-parameters
 ```

@@ -38,6 +38,14 @@ Get the image-scan report for the given image
 little ecr scanreport little/session_mgr latest
 ```
 
+### scan-in-progress
+
+test if an ECR security scan is in progress on a given image
+
+```
+little ecr scan-in-progress little/session_mgr latest
+```
+
 ## AWS Cheat Sheet
 
 ```
