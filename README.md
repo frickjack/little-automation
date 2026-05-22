@@ -2,8 +2,11 @@
 
 This [bLog](https://fortelabs.com/blog/para/) explains the PARA method for
 organizing information: project, area, resource, and archive.
+Our `Archive/` folder has `Completed/` and `Abandoned/` sub-folders, and the
+`Projects/` folder has `Planning/` and `Active/` sub-folders.
 
-This [bLog](https://www.divio.com/blog/documentation/) explains the 4 types of documentation: tutorials, how-to guides, explanation, and reference
+This [bLog](https://www.divio.com/blog/documentation/) explains the 4 types of documentation: tutorials, how-to guides, explanation, and reference.  The `Notes/Areas` folder has
+sub-folders for each type of documentation.
 
 ## TOC
 

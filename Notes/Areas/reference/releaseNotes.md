@@ -1,7 +1,19 @@
 # TL;DR
 
 Some basic information on our tagged releases.
-Note - `git log tag1...tag2` shows the commit log between versions.
+Notes:
+- `git log tag1...tag2` shows the commit log between versions
+- [gitReleaseFlow](../explanation/gitReleaseFlow.md) explains our tagging and release process
+
+## Versions 1.3.X/1.4.X
+
+- update codebuild `buildSpec.yml` with automatic tagging to implement our [gitflow](../explanation/gitReleaseFlow.md) process
+    * introduce `little codebuild`
+    * [issue 26](https://github.com/frickjack/little-automation/issues/26)
+- [dev VPC](../../Projects/Active/2026DevVpc/README.md) project
+    * [devvpc](../../../AWS/lib/cloudformation/devVpc/README.md) cloudformation stack
+    * [issue 25](https://github.com/frickjack/little-automation/issues/25)
+
 
 ## Version 1.2.4
 

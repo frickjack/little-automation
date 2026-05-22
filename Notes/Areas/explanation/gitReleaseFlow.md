@@ -16,7 +16,7 @@ cycle independent of software tracked in other repositories.
 We use the following terminology.
 
 * release - a set of software features delivered to customers via 
-a series of delivery artifacts (typically docker images) tagged with a string with form: `$releaseStage/$majorVersion.$minorVersion.$patchVersion` where release stage is one of `(dev, beta, ga)`
+a series of delivery artifacts (typically docker images) tagged with a string with form: `$majorVersion.$minorVersion.$patchVersion` where odd minor versions are reserved for "dev" releases
 * environment - a software environment that runs the software
 * tenant - a partition of the data managed by the software owned by a particular customer
 * region - a geographic partitioning of an environment
