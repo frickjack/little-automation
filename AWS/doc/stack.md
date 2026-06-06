@@ -109,16 +109,16 @@ little stack delete path/to/stackParams.json
 Retrieve the event log for a stack
 
 ```
-little stack update path/to/stackParams.json
+little stack events path/to/stackParams.json
 ```
 
 ### filter
 
 Apply the nunjucks variables from a stack definition to the cloudformation
-tempalte referenced by the stack.
+template referenced by the stack.
 Ex:
 ```
-little stack filter-template path/to/stackParams.json
+little stack filter path/to/stackParams.json
 ```
 
 ### filter-template

@@ -102,8 +102,8 @@ littleRun() {
       littleDoCommand help "$@"
       return $?
     fi
-    if [[ "$commandType" == "little-basic" ]]; then
-      # no need for AWS creds, just go
+    if [[ "$commandType" == "little-basic" || -n "$AWS_SESSION_TOKEN" ]]; then
+      # no need for AWS creds or already have token - just go
       littleDoCommand "$@"
       return $?
     fi
@@ -147,6 +147,7 @@ littleRun() {
         expiration="$(date "-d$expiration" '+%s')"
       fi
       now="$(date '+%s')"
+      # command should have at least 15 minutes to run
       if [[ "$expiration" -lt "$((now  + 900))" ]]; then
         /bin/rm "$cacheFile"
       fi
@@ -156,7 +157,7 @@ littleRun() {
       # need to refresh the cache if we make it here
       local code
       if [[ -n "$mfaSerial" ]]; then
-        read -p "Enter MFA token code for $mfaSerial: " -r code
+        read -p "Enter MFA token code for $mfaSerial: " -r code < /dev/tty
         if [[ -z "$code" ]]; then
           return 1
         fi
