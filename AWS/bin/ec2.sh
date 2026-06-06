@@ -38,7 +38,7 @@ ssh-config-filter() {
     if [[ -z "$currentConfig" ]]; then
         gen3_log_err "ssh-config read empty config - add IdentityFile directive to little-trusted matching rule"
         cat - <<EOM
-Match tag little-trusted:true
+Match tagged little-trusted:true
    ServerAliveInterval 120
    ForwardAgent yes
    User ec2-user

@@ -1,6 +1,6 @@
 test-ec2-ssh-config-filter-empty() {
   local expected="$(cat - <<EOM
-Match tag little-trusted:true
+Match tagged little-trusted:true
    ServerAliveInterval 120
    ForwardAgent yes
    User ec2-user
@@ -26,7 +26,7 @@ Host *
    IdentityFile ~/.ssh/id_ed25519
    IdentitiesOnly yes
 
-Match tag little-trusted:true
+Match tagged little-trusted:true
    ServerAliveInterval 120
    ForwardAgent yes
    User ec2-user
@@ -61,7 +61,7 @@ Host *
    IdentityFile ~/.ssh/id_ed25519
    IdentitiesOnly yes
 
-Match tag little-trusted:true
+Match tagged little-trusted:true
    ServerAliveInterval 120
    ForwardAgent yes
    User ec2-user
@@ -84,7 +84,7 @@ Host *
    IdentityFile ~/.ssh/id_ed25519
    IdentitiesOnly yes
 
-Match tag little-trusted:true
+Match tagged little-trusted:true
    ServerAliveInterval 120
    ForwardAgent yes
    User ec2-user
