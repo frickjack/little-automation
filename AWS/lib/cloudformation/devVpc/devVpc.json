@@ -131,32 +131,38 @@
     "{{ vm.name }}InstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
+        "Path": "/littleware/dev-vpc/",
         "Roles": [ "{{ vm.roleName }}" ]
       }
     },
     "{{ vm.name }}Instance": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
-        "IamInstanceProfile": { "Fn::If": [ "HasIamRole", { "Ref": "{{ vm.name }}InstanceProfile" }, { "Ref": "AWS::NoValue" } ] },
+        "IamInstanceProfile": { "Ref": "{{ vm.name }}InstanceProfile" },
         "InstanceType": { "Ref": "InstanceType" },
         "ImageId": { "Ref": "AmiId" },
         "SubnetId": { "Ref": "PublicSubnet" },
-        "SecurityGroupIds": [ { "Ref": "InstanceSecurityGroup" } ],
+        "SecurityGroupIds": [ { "Ref": "SecurityGroup" } ],
         "BlockDeviceMappings": [
           {
             "DeviceName": "/dev/xvda",
             "Ebs": {
-              "VolumeSize": 20,
+              "VolumeSize": 100,
               "Encrypted": true
             }
-          },
-          {
+          }
+          {#
+          TODO - introduce chef/cloudformation script to format and mount
+            an off-root data volume for home directories, logs, and
+            docker containers
+          ,{
             "DeviceName": "/dev/sdb",
             "Ebs": {
               "VolumeSize": 100,
               "Encrypted": true
             }
           }
+          #}
         ],
         "UserData": {
           "Fn::Base64": {
@@ -181,7 +187,7 @@
     },
     {% endfor %}
 
-    "InstanceSecurityGroup": {
+    "SecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "Security group for dev instance with restricted external access and unrestricted internal access",
@@ -210,9 +216,9 @@
       "Value": { "Fn::GetAtt": [ "{{ vm.name }}Instance", "PublicIp" ] },
       "Description": "Public IPv4 address of the dev instance"
     },
-    "{{ vm.name }}InstancePublicIpv6": {
-      "Value": { "Fn::Select": [ 0, { "Fn::GetAtt": [ "{{ vm.name }}Instance", "Ipv6Addresses" ] } ] },
-      "Description": "Public IPv6 address of the dev instance"
+    "{{ vm.name }}InstanceId": {
+      "Value": { "Ref": "{{ vm.name }}Instance" },
+      "Description": "Instance id of the dev instance"
     },
     {% endfor %}
     "VpcId": {

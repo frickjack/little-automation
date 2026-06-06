@@ -39,7 +39,7 @@
         "vmList": [
           {
             "name": "reuben",
-            "roleName": "littleware/account/user/littleAdmin"
+            "roleName": "littleAdmin"
           }
         ]
       }
