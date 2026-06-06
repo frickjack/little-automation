@@ -20,7 +20,7 @@ Projects will eventually move to the archive, so don't bookmark them.
 
 ### [archives](./Notes/Archives)
 
-### [resources](./Notes/Areas)
+### [resources](./Notes/Resources)
 
 #### [tutorials](./Notes/Areas/tutorial)
 
@@ -42,4 +42,4 @@ Projects will eventually move to the archive, so don't bookmark them.
 #### [reference](./Notes/Areas/reference)
 
 * [Release Notes](./Notes/Areas/reference/releaseNotes.md)
-* [little commands](./Notes/Areas/reference/littleCommands.md)
+* [little commands](./Notes/Areas/reference/cli/README.md)

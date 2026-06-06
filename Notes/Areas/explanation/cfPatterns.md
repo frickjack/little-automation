@@ -11,12 +11,12 @@ required for many cloud architectures, various
 extensions and template generators have emerged
 (like [CDK](https://aws.amazon.com/cdk/) 
 and [SAM](https://aws.amazon.com/serverless/sam/)).
-The [little stack](https://github.com/frickjack/little-automation/blob/main/AWS/doc/stack.md) tools allow the use of the [nunjucks](https://mozilla.github.io/nunjucks/) template language in cloudformation templates
+The [little stack](https://github.com/frickjack/little-automation/blob/main/Notes/Areas/reference/cli/stack.md) tools allow the use of the [nunjucks](https://mozilla.github.io/nunjucks/) template language in cloudformation templates
 to support various infrastructure patterns.
 
 ## Overview of little tools
 
-The [little tools](https://github.com/frickjack/little-automation/blob/main/AWS/doc/README.md) include the [little stack](https://github.com/frickjack/little-automation/blob/main/AWS/doc/stack.md) helpers
+The [little tools](https://github.com/frickjack/little-automation/blob/main/Notes/Areas/reference/cli/README.md) include the [little stack](https://github.com/frickjack/little-automation/blob/main/Notes/Areas/reference/cli/stack.md) helpers
 for deploying infrastructure defined by a declarative template file.  The little tools include their own [library](https://github.com/frickjack/little-automation/tree/main/AWS/lib/cloudformation) of cloudformation templates.  Ideally a template is defined in a
 generic way, but accepts input parameters that allow
 different stacks (like prod and dev) to be deployed, so a `(template.json, parameters.json)` pair defines each infrastructure stack.  The end user follows this workflow.
@@ -368,5 +368,5 @@ The kms alias names are passed as part of the json configuration to the session 
 
 ## Summary
 
-The [little stack](https://github.com/frickjack/little-automation/blob/main/AWS/doc/stack.md) tools allow the use of the [nunjucks](https://mozilla.github.io/nunjucks/) template language in cloudformation templates
+The [little stack](https://github.com/frickjack/little-automation/blob/main/Notes/Areas/reference/cli/stack.md) tools allow the use of the [nunjucks](https://mozilla.github.io/nunjucks/) template language in cloudformation templates
 to support various infrastructure patterns.

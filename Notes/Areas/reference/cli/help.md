@@ -1,6 +1,6 @@
 # TL;DR
 
-Access the help documentation under the `AWS/doc` folder of the `little` install
+Access the help documentation under the `Notes/Areas/reference/cli` folder of the `little` install
 
 ## Use
 

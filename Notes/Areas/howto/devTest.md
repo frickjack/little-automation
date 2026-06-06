@@ -26,7 +26,7 @@ The `little` tool sets up some environment (AWS credentials, paths, etc),
 then calls through to 
 another script under `AWS/bin/`.  For example, `little stack ...`
 calls through to `AWS/bin/stack.sh`.
-The various little tools are documented under `AWS/doc/`, and the
+The various little tools are documented under `Notes/Areas/reference/cli/`, and the
 `little help <toolName>` command helps access that documentation.
 Finally, the `little testsuite` tool executes the unit tests under `AWS/test/`
 
@@ -47,7 +47,7 @@ Each instantiation of a stack supplies parameters that customize the
 template for that particular stack's needs.  Because cloudformation
 templates do not natively provide the flexibility we need, we extend
 our templates with [nunjucks](https://mozilla.github.io/nunjucks/) rules  supported
-by our [little stack](https://github.com/frickjack/little-automation/blob/dev/AWS/doc/stack.md) tools.
+by our [little stack](https://github.com/frickjack/little-automation/blob/dev/Notes/Areas/reference/cli/stack.md) tools.
 
 
 ```

@@ -29,7 +29,7 @@ Systems like the following take different approaches to address this problem.
 * the [serverless framework](https://www.serverless.com/) provides tools that deploy serverless applications across different clouds from its own yaml configuration files
 * the [aws cloud development kit](https://aws.amazon.com/cdk/) provides software libraries for expressing cloudformation templates programatically
 
-We implement our own [little tools](https://github.com/frickjack/little-automation/tree/main/AWS/doc) that extend cloudformation templates with expressions (from the [nunjucks](https://mozilla.github.io/nunjucks/) template library) that can dynamically add resources to a stack based on variable values.
+We implement our own [little tools](https://github.com/frickjack/little-automation/tree/main/Notes/Areas/reference/cli) that extend cloudformation templates with expressions (from the [nunjucks](https://mozilla.github.io/nunjucks/) template library) that can dynamically add resources to a stack based on variable values.
 The `little stack` tools consume a json stack definition
 with three main parts:
 * a reference to a clouformation template

@@ -33,7 +33,7 @@ The `little` wrapper automatically injects AWS credentials based on your `AWS_PR
 *   **Secrets Manager**: `little secret [sub-command]`
 *   **Systems Manager (SSM)**: `little ssm [sub-command]`
 
-Documentation for specific commands can be found in `AWS/doc/`.
+Documentation for specific commands can be found in `Notes/Areas/reference/cli/`.
 
 ### Testing
 
