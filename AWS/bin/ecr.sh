@@ -43,9 +43,17 @@ gen3_ecr_scanreport() {
   shift || return 1
   local tag="$1"
   shift || return 1
-  local reg="$(gen3_ecr_registry)"
-  repo="${repo#reg}"
   aws ecr describe-image-scan-findings --repository-name "$repo" --image-id "imageTag=$tag"
+}
+
+gen3_ecr_scan_in_progress() {
+  local repo="$1"
+  shift || return 1
+  local tag="$1"
+  shift || return 1
+  local scanresult
+  scanresult="$(gen3_ecr_scanreport "$repo" "$tag")"
+  test "$(jq -e -r .imageScanStatus.status <<< "$scanresult")" = IN_PROGRESS
 }
 
 # main -----------------------
@@ -66,6 +74,9 @@ if [[ -z "$GEN3_SOURCE_ONLY" ]]; then
       ;;
     "scanreport")
       gen3_ecr_scanreport "$@"
+      ;;
+    "scan-in-progress")
+      gen3_ecr_scan_in_progress "$@"
       ;;
     *)
       little help ecr

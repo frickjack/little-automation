@@ -2,10 +2,8 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Parameters": {
       "GithubToken": {
-        "Type": "String",
-        "Description": "arn of secretsmanager secret for access token",
-        "ConstraintDescription": "secret arn",
-        "AllowedPattern": "arn:aws:secretsmanager:.+"
+        "Type": "AWS::SSM::Parameter::Value<String>",
+        "Description": "ssm parameter holding github access token"
       }
     },
     "Resources": {
@@ -129,12 +127,8 @@
         "Properties" : {
             "AuthType" : "PERSONAL_ACCESS_TOKEN",
             "ServerType" : "GITHUB",
-            "Token": { "Fn::Join" : 
-              {% raw %}
-               [ "", [ "{{resolve:secretsmanager:", { "Ref": "GithubToken" }, ":SecretString:token}}" ]]
-              {% endraw %}
-            }
-          }
+            "Token": { "Ref": "GithubToken" }
+        }
       }
     },
 

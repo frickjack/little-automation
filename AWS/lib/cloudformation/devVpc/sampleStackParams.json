@@ -1,0 +1,47 @@
+{
+  "StackName": "devVpc-test",
+  "Capabilities": [
+      "CAPABILITY_IAM"
+  ],
+  "Parameters": [
+    { "ParameterKey": "WhitelistIpV4", "ParameterValue": "10.0.0.1/32" },
+    { "ParameterKey": "WhitelistIpV6", "ParameterValue": "fd00::/8" },
+    { 
+      "ParameterKey": "AuthorizedKeys",
+      "ParameterValue": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO6nIYMnU9J8ABBFQVeH9P5aiKCdlGaZf4CX7jZr0BSi reuben@frickjack.com"
+    }
+  ],
+  "Tags": [
+    {
+        "Key": "org",
+        "Value": "devops"
+    },
+    {
+        "Key": "project",
+        "Value": "dev-infra"
+    },
+    {
+        "Key": "stack",
+        "Value": "dev"
+    },
+    {
+        "Key": "stage",
+        "Value": "dev"
+    },
+    {
+      "Key": "role",
+      "Value": "dev-vpc"
+    }
+  ],
+  "Littleware": {
+      "TemplatePath": "lib/cloudformation/devVpc/devVpc.json",
+      "Variables": {
+        "vmList": [
+          {
+            "name": "reuben",
+            "roleName": "littleAdmin"
+          }
+        ]
+      }
+  }
+}

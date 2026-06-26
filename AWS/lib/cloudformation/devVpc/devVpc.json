@@ -1,0 +1,229 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Metadata": {
+    "License": "Apache-2.0"
+  },
+  "Description": "IPv6 enabled VPC with a single public subnet and a standalone development EC2 instance.",
+  "Parameters": {
+    "WhitelistIpV4": {
+      "Type": "String",
+      "Description": "IPv4 CIDR for external access to specified ports (e.g., 1.2.3.4/32)",
+      "AllowedPattern": "(\\d{1,3}\\.){3}\\d{1,3}/\\d{1,2}",
+      "Default": "0.0.0.0/0",
+      "ConstraintDescription": "must be a valid IPv4 CIDR range."
+    },
+    "WhitelistIpV6": {
+      "Type": "String",
+      "Description": "IPv6 CIDR for external access to specified ports (e.g., ::/0)",
+      "Default": "::/0",
+      "ConstraintDescription": "must be a valid IPv6 CIDR range."
+    },
+    "InstanceType": {
+      "Type": "String",
+      "Description": "EC2 instance type",
+      "Default": "m6g.medium"
+    },
+    "AmiId": {
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+      "Default": "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-arm64",
+      "Description": "The AMI ID for the instance. Defaults to the latest Amazon Linux 2023 ARM64 AMI."
+    },
+    "AuthorizedKeys": {
+      "Type": "String",
+      "Description": "Comma-separated list of public SSH keys to authorize for ec2-user",
+      "Default": ""
+    }
+  },
+  "Resources": {
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsSupport": "true",
+        "EnableDnsHostnames": "true",
+        "Tags": [
+          { "Key": "Name", "Value": "devVpc" },
+          {{ stackTagsStr }}
+        ]
+      }
+    },
+    "Ipv6CidrBlock": {
+      "Type": "AWS::EC2::VPCCidrBlock",
+      "Properties": {
+        "AmazonProvidedIpv6CidrBlock": true,
+        "VpcId": { "Ref": "VPC" }
+      }
+    },
+    "InternetGateway": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          { "Key": "Name", "Value": "devVpc-igw" },
+          {{ stackTagsStr }}
+        ]
+      }
+    },
+    "VPCGatewayAttachment": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": { "Ref": "VPC" },
+        "InternetGatewayId": { "Ref": "InternetGateway" }
+      }
+    },
+    "PublicSubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "DependsOn": "Ipv6CidrBlock",
+      "Properties": {
+        "VpcId": { "Ref": "VPC" },
+        "AvailabilityZone": { "Fn::Select": [ 0, { "Fn::GetAZs": "" } ] },
+        "CidrBlock": "10.0.1.0/24",
+        "Ipv6CidrBlock": {
+          "Fn::Select": [ 
+            0, 
+            { "Fn::Cidr": [ { "Fn::Select": [ 0, { "Fn::GetAtt": [ "VPC", "Ipv6CidrBlocks" ] } ] }, 1, 64 ] } 
+          ]
+        },
+        "AssignIpv6AddressOnCreation": true,
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          { "Key": "Name", "Value": "devVpc-public-subnet" },
+          {{ stackTagsStr }}
+        ]
+      }
+    },
+    "RouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": { "Ref": "VPC" },
+        "Tags": [
+          { "Key": "Name", "Value": "devVpc-public-routes" },
+          {{ stackTagsStr }}
+        ]
+      }
+    },
+    "DefaultRouteIpv4": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VPCGatewayAttachment",
+      "Properties": {
+        "RouteTableId": { "Ref": "RouteTable" },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": { "Ref": "InternetGateway" }
+      }
+    },
+    "DefaultRouteIpv6": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "VPCGatewayAttachment",
+      "Properties": {
+        "RouteTableId": { "Ref": "RouteTable" },
+        "DestinationIpv6CidrBlock": "::/0",
+        "GatewayId": { "Ref": "InternetGateway" }
+      }
+    },
+    "SubnetRouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": { "Ref": "PublicSubnet" },
+        "RouteTableId": { "Ref": "RouteTable" }
+      }
+    },
+
+    {% for vm in stackVariables.vmList %}
+    "{{ vm.name }}InstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/littleware/dev-vpc/",
+        "Roles": [ "{{ vm.roleName }}" ]
+      }
+    },
+    "{{ vm.name }}Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "IamInstanceProfile": { "Ref": "{{ vm.name }}InstanceProfile" },
+        "InstanceType": { "Ref": "InstanceType" },
+        "ImageId": { "Ref": "AmiId" },
+        "SubnetId": { "Ref": "PublicSubnet" },
+        "SecurityGroupIds": [ { "Ref": "SecurityGroup" } ],
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/xvda",
+            "Ebs": {
+              "VolumeSize": 100,
+              "Encrypted": true
+            }
+          }
+          {#
+          TODO - introduce chef/cloudformation script to format and mount
+            an off-root data volume for home directories, logs, and
+            docker containers
+          ,{
+            "DeviceName": "/dev/sdb",
+            "Ebs": {
+              "VolumeSize": 100,
+              "Encrypted": true
+            }
+          }
+          #}
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Sub": [
+              "#cloud-config\nssh_authorized_keys:\n  - ${Keys}",
+              {
+                "Keys": {
+                  "Fn::Join": [
+                    "\n  - ",
+                    { "Fn::Split": [ ",", { "Ref": "AuthorizedKeys" } ] }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "Tags": [
+          { "Key": "Name", "Value": "{{ vm.name }}" },
+          {{ stackTagsStr }}
+        ]
+      }
+    },
+    {% endfor %}
+
+    "SecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security group for dev instance with restricted external access and unrestricted internal access",
+        "VpcId": { "Ref": "VPC" },
+        "SecurityGroupIngress": [
+          { "IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "CidrIp": { "Ref": "WhitelistIpV4" } },
+          { "IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "CidrIpv6": { "Ref": "WhitelistIpV6" } },
+
+          { "IpProtocol": "-1", "CidrIp": { "Fn::GetAtt": [ "PublicSubnet", "CidrBlock" ] }, "Description": "Allow unrestricted internal access from public subnet IPv4" },
+          { "IpProtocol": "-1", "CidrIpv6": { "Fn::Select": [ 0, { "Fn::GetAtt": [ "PublicSubnet", "Ipv6CidrBlocks" ] } ] }, "Description": "Allow unrestricted internal access from public subnet IPv6" }
+        ],
+        "SecurityGroupEgress": [
+          { "IpProtocol": "-1", "CidrIp": "0.0.0.0/0", "Description": "Allow all outbound IPv4" },
+          { "IpProtocol": "-1", "CidrIpv6": "::/0", "Description": "Allow all outbound IPv6" }
+        ],
+        "Tags": [
+          { "Key": "Name", "Value": "devVpc-sg" },
+          {{ stackTagsStr }}
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    {% for vm in stackVariables.vmList %}
+    "{{ vm.name }}InstancePublicIp": {
+      "Value": { "Fn::GetAtt": [ "{{ vm.name }}Instance", "PublicIp" ] },
+      "Description": "Public IPv4 address of the dev instance"
+    },
+    "{{ vm.name }}InstanceId": {
+      "Value": { "Ref": "{{ vm.name }}Instance" },
+      "Description": "Instance id of the dev instance"
+    },
+    {% endfor %}
+    "VpcId": {
+      "Value": { "Ref": "VPC" },
+      "Description": "VPC ID"
+    }
+  }
+}
