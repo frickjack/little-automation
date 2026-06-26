@@ -4,8 +4,8 @@
       "CAPABILITY_IAM"
   ],
   "Parameters": [
-    { "ParameterKey": "WhitelistIpV4", "ParameterValue": "10.0.0.1/32" },
-    { "ParameterKey": "WhitelistIpV6", "ParameterValue": "fd00::/8" },
+    { "ParameterKey": "WhitelistIpV4", "ParameterValue": "0.0.0.0/0" },
+    { "ParameterKey": "WhitelistIpV6", "ParameterValue": "::/0" },
     { 
       "ParameterKey": "AuthorizedKeys",
       "ParameterValue": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO6nIYMnU9J8ABBFQVeH9P5aiKCdlGaZf4CX7jZr0BSi reuben@frickjack.com"
