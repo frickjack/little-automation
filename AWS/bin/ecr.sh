@@ -52,7 +52,7 @@ gen3_ecr_scan_in_progress() {
   local tag="$1"
   shift || return 1
   local scanresult
-  scanresult="$(little ecr scanreport "$repo" "$tag")"
+  scanresult="$(gen3_ecr_scanreport "$repo" "$tag")"
   test "$(jq -e -r .imageScanStatus.status <<< "$scanresult")" = IN_PROGRESS
 }
 

@@ -42,7 +42,7 @@ vm-describe() {
 vm-public-ip() {
     local info
     info="$(vm-describe "$@")" || return 1
-    jq --arg instId "$instanceId" -e -r '.Reservations[0].Instances[0] | .PublicIpAddress' <<< "$info"
+    jq -e -r '.Reservations[0].Instances[0] | .PublicIpAddress' <<< "$info"
 }
 
 vm-start() {
