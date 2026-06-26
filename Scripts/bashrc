@@ -10,6 +10,14 @@ alias netup='iwlist wlo1 scan'
 # xsel -b === clipboard get/put
 alias bootclean="echo 'sudo apt-get purge \$(dpkg -l linux-{image,headers}-"[0-9]*" | awk '/ii/{print $2}' | grep -ve -4.4.0-6)' where current kernel version is uname -r"
 
+# append to the history file, don't overwrite it
+shopt -s histappend
+# do not escape $ on tab
+shopt -s direxpand
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
 alias battery='upower -i $(upower -e | grep battery) | grep -e "time to empty" -e percentage'
 alias cp="cp -i"
 alias rm="rm -i"
