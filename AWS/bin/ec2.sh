@@ -159,7 +159,7 @@ mds-get-token() {
 mds-kurl() {
     local token="$1"
     shift
-    local path="${2:-"/latest/meta-data/iam/info"}"
+    local path="${1:-"/latest/meta-data/iam/info"}"
     shift
 
     [[ -n "$token" ]] || { gen3_log_err "mds-kurl requires token"; return 1; }
