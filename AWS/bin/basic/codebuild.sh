@@ -7,7 +7,10 @@ source "${LITTLE_HOME}/lib/bash/utils.sh"
 
 branch-name() {
     local BRANCH_NAME
-    if [ -n "$CODEBUILD_WEBHOOK_HEAD_REF" ]; then
+    if [ "$CODEBUILD_WEBHOOK_EVENT" = "PULL_REQUEST_MERGED" ] && [ -n "$CODEBUILD_WEBHOOK_BASE_REF" ]; then
+        # For PR events, the base ref is the destination branch
+        BRANCH_NAME=$(sed 's|refs/heads/||' <<< "$CODEBUILD_WEBHOOK_BASE_REF")
+    elif [ -n "$CODEBUILD_WEBHOOK_HEAD_REF" ]; then
         BRANCH_NAME=$(sed 's|refs/heads/||' <<< "$CODEBUILD_WEBHOOK_HEAD_REF")
     elif [ -n "$CODEBUILD_SOURCE_VERSION" ] && [[ "$CODEBUILD_SOURCE_VERSION" != arn:* ]]; then
         BRANCH_NAME=$CODEBUILD_SOURCE_VERSION
