@@ -1,7 +1,13 @@
 test-cb-branch-name() {
   local branchName
+  unset CODEBUILD_WEBHOOK_BASE_REF
+  unset CODEBUILD_WEBHOOK_EVENT
   unset CODEBUILD_WEBHOOK_HEAD_REF
   unset CODEBUILD_SOURCE_VERSION
+
+  branchName="$(CODEBUILD_WEBHOOK_BASE_REF="refs/heads/frick" CODEBUILD_WEBHOOK_EVENT=PULL_REQUEST_MERGED little codebuild branch-name)" \
+      && [[ "frick" == "$branchName" ]];
+      because $? "codebuild branch-name leverages CODEBUILD_WEBHOOK_BASE_REF when PR merged"
 
   branchName="$(CODEBUILD_WEBHOOK_HEAD_REF="refs/heads/bla" little codebuild branch-name)" \
       && [[ "bla" == "$branchName" ]];
