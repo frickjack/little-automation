@@ -25,6 +25,13 @@
         "ConstraintDescription": "https://github.com/ repo url",
         "AllowedPattern": "https://github.com/.+"
       },
+      "BuildTimeoutInMinutes": {
+        "Type": "String",
+        "Description": "integer number of minutes - default 15",
+        "Default": "15",
+        "ConstraintDescription": "number 1-999",
+        "AllowedPattern": "[1-9][0-9]{0,2}"
+      },
       "PrivilegedMode": {
         "AllowedValues": [
             "true",
@@ -98,7 +105,7 @@
                       "Value": "codebuild"
                     }
                 ],
-                "TimeoutInMinutes" : 10,
+                "TimeoutInMinutes" : { "Ref": "BuildTimeoutInMinutes" },
                 "Triggers" : {
                   "FilterGroups" : [ 
                     [

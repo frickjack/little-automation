@@ -8,7 +8,7 @@
     "Parameters" : [
         {
             "ParameterKey": "GithubToken",
-            "ParameterValue": "arn:aws:secretsmanager:us-east-2:027326493842:secret:applications/cicd/cell0/dev/github-token-zsuQPl"
+            "ParameterValue": "dev.cicd.main.active.github-token"
         }
     ],
     "Tags": [

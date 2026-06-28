@@ -1,29 +1,45 @@
 # TL;DR
 
-This [bLog](https://www.divio.com/blog/documentation/) explains the 4 types of documentation: tutorials for learning, how-to guides for completing tasks, explanation for understanding, and reference for information.
+This [bLog](https://fortelabs.com/blog/para/) explains the PARA method for
+organizing information: project, area, resource, and archive.
+Our `Archive/` folder has `Completed/` and `Abandoned/` sub-folders, and the
+`Projects/` folder has `Planning/` and `Active/` sub-folders.
+
+This [bLog](https://www.divio.com/blog/documentation/) explains the 4 types of documentation: tutorials, how-to guides, explanation, and reference.  The `Notes/Areas` folder has
+sub-folders for each type of documentation.
 
 ## TOC
 
-### [tutorials](./Notes/tutorial)
+### [projects](./Notes/Projects)
 
-Nothing here yet.
+Projects will eventually move to the archive, so don't bookmark them.
 
-### [explanation](./Notes/explanation)
+* [2026DevVpc](./Notes/Projects/2026DevVpc/README.md)
 
-* [Hydrating a new AWS Account](./Notes/explanation/accountHydrate.md)
-* [Littleware and API Gateway](./Notes/explanation/apiGateway.md)
-* [CICD with CodeBuild](./Notes/explanation/codeBuildCICD.md)
-* [ECR setup](./Notes/explanation/ecrSetup.md)
-* [Cloudformation Patterns](./Notes/explanation/cfPatterns.md)
-* [Route53 in Cloudformation](./Notes/explanation/route53Cf.md)
-* [Jamstack in Cloudformation](./Notes/explanation/s3webCf.md)
+### [areas](./Notes/Areas)
 
-### [how-tos](./Notes/howto)
+### [archives](./Notes/Archives)
 
-* [WIP - Contributing to Littleware](./Notes/howto/littleContribute.md)
-* [dev-test](./Notes/howto/devTest.md)
+### [resources](./Notes/Resources)
 
-### [reference](./Notes/reference)
+#### [tutorials](./Notes/Areas/tutorial)
 
-* [Release Notes](./Notes/reference/releaseNotes.md)
-* [little commands](./Notes/reference/littleCommands.md)
+#### [explanation](./Notes/Areas/explanation)
+
+* [Hydrating a new AWS Account](./Notes/Areas/explanation/accountHydrate.md)
+* [Littleware and API Gateway](./Notes/Areas/explanation/apiGateway.md)
+* [CICD with CodeBuild](./Notes/Areas/explanation/codeBuildCICD.md)
+* [ECR setup](./Notes/Areas/explanation/ecrSetup.md)
+* [Cloudformation Patterns](./Notes/Areas/explanation/cfPatterns.md)
+* [Route53 in Cloudformation](./Notes/Areas/explanation/route53Cf.md)
+* [Jamstack in Cloudformation](./Notes/Areas/explanation/s3webCf.md)
+
+#### [how-tos](./Notes/Areas/howto)
+
+* [WIP - Contributing to Littleware](./Notes/Areas/howto/littleContribute.md)
+* [dev-test](./Notes/Areas/howto/devTest.md)
+
+#### [reference](./Notes/Areas/reference)
+
+* [Release Notes](./Notes/Areas/reference/releaseNotes.md)
+* [little commands](./Notes/Areas/reference/cli/README.md)

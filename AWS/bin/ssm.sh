@@ -18,8 +18,8 @@ saveParameter() {
     value="$1"
     shift
     description="$1"
-    if [[ ! "$value" =~ ^\{.+:.+\}$ ]] || ! jq -e -r . <<<"$value" > /dev/null 2>&1; then
-        gen3_log_err "invalid secret value - must be a json object"
+    if [[ -z "$value" ]]; then
+        gen3_log_err "empty secret value"
         return 1
     fi
     local nameList=(${name//./ })
