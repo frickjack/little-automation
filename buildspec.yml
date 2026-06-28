@@ -54,8 +54,7 @@ phases:
           echo "BUILD_TYPE is $BUILD_TYPE, CODEBUILD_WEBHOOK_EVENT is $CODEBUILD_WEBHOOK_EVENT, CODEBUILD_WEBHOOK_TRIGGER is $CODEBUILD_WEBHOOK_TRIGGER"
           if [ "$CODEBUILD_WEBHOOK_EVENT" != "PULL_REQUEST_MERGED" ]; then
               echo "CODEBUILD_WEBHOOK_EVENT is not a pr merge event, skipping post_build: $CODEBUILD_WEBHOOK_EVENT"
-              echo "not skipping - testing tagging logic"
-              #exit 0
+              exit 0
           fi
 
           little() {
@@ -70,9 +69,7 @@ phases:
           MAJOR=1
           DEV_MINOR=3
           BRANCH_NAME="$(little codebuild branch-name)"
-          #TAG_NAME="$(little codebuild tag-name $MAJOR $DEV_MINOR $PATCH_VERSION "$BRANCH_NAME")"
-          # force dev branch for testing
-          TAG_NAME="$(little codebuild tag-name $MAJOR $DEV_MINOR $PATCH_VERSION "dev")"
+          TAG_NAME="$(little codebuild tag-name $MAJOR $DEV_MINOR $PATCH_VERSION "$BRANCH_NAME")"
           
           if test -n "$TAG_NAME"; then
             little ecr login || exit 1
