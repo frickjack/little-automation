@@ -70,7 +70,9 @@ phases:
           MAJOR=1
           DEV_MINOR=3
           BRANCH_NAME="$(little codebuild branch-name)"
-          TAG_NAME="$(little codebuild tag-name $MAJOR $DEV_MINOR $PATCH_VERSION "$BRANCH_NAME")"
+          #TAG_NAME="$(little codebuild tag-name $MAJOR $DEV_MINOR $PATCH_VERSION "$BRANCH_NAME")"
+          # force dev branch for testing
+          TAG_NAME="$(little codebuild tag-name $MAJOR $DEV_MINOR $PATCH_VERSION "dev")"
           
           if test -n "$TAG_NAME"; then
             little ecr login || exit 1
