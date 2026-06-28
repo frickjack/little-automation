@@ -2,7 +2,9 @@
 version: 0.2
 
 env:
-  git-credential-helper: yes
+  parameter-store:
+    # Fetches the SecureString from SSM and maps it to GITHUB_TOKEN
+    GITHUB_TOKEN: "dev.cicd.main.active.github-token"
 
 phases:
   install:
@@ -22,6 +24,11 @@ phases:
       - mkdir -p "$HOME/.aws"; /bin/echo -e "[default]\nregion = ${AWS_REGION}\noutput = json\ncredential_source = Ec2InstanceMetadata\n" | tee "$HOME/.aws/config"
       - npm ci
       - pip install yq --upgrade
+      - echo "Configuring Git authentication..."
+      # Extracts the repository URL format dynamically from the CodeBuild environment
+      - REPO_URL=$(git config --get remote.origin.url | sed 's|https://||')
+      # Re-configures the origin URL to securely inject the GitHub token
+      - git remote set-url origin "https://${GITHUB_TOKEN}@${REPO_URL}"
       # Sets required Git identity configs to prevent commit/tag errors
       - git config --global user.name "AWS CodeBuild"
       - git config --global user.email "codebuild@amazonaws.com"
@@ -68,7 +75,7 @@ phases:
             little ecr login || exit 1
             echo "Creating and pushing Git tag: $TAG_NAME"
             git tag -a "$TAG_NAME" -m "Automated build tag from CodeBuild run $CODEBUILD_BUILD_NUMBER"
-            git push origin "$TAG_NAME" || { echo "git push failed" 1>&2; exit 1; }
+            git push origin "$TAG_NAME"
           else
             echo "not tagging on branch $BRANCH_NAME"
           fi
