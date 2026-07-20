@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "glob": "^7.1.2",
+    "glob": "^13.0.6",
     "mkdirp": "^0.5.1",
     "node-fetch": "^2.1.2"
   }
