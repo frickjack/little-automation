@@ -15,7 +15,7 @@ little secret create org/project/stack/stage/role value description
 
 Use `aws secretsmanager put-secret-value` to update a secret - ex:
 ```
-aws secretsmanager put-secret-value --secret-id "$(little secret lookup "$name" | jq -r .ARN)" --secret-string "$(cat - <<EOM
+aws secretsmanager put-secret-value --secret-id "$(little secret lookup "$name" | jq -r .ARN)" --secret-string "$(jq -c . <<EOM
 { "token": "$(cat tokenFile.txt)" }"
 EOM
 )"
