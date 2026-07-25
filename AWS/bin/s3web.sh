@@ -63,7 +63,7 @@ s3webPath2ContentType() {
 #
 # @param filePath local file path
 # @param destPath s3:// path to copy to
-# @param --dryRun optional flag
+# @param --dryrun optional flag
 #
 s3webCp() {
     local filePath
@@ -85,7 +85,7 @@ s3webCp() {
         shift
         dryRun=on
     fi
-    if [[ ! -d "$filePath" ]]; then
+    if [[ ! -f "$filePath" ]]; then
         gen3_log_err "invalid source path: $filePath"
         return 1
     fi
@@ -170,12 +170,14 @@ s3webPublish() {
         commandList=()
         cd "$srcFolder"
         gzTemp="$(mktemp "$XDG_RUNTIME_DIR/gzTemp_XXXXXX")"
-        find . -type f -print | while read -r filePath; do
+        while read -r filePath; do
             destPath="${destPrefix%/}/${filePath#./}"
-            s3webCp "$filePath" "$destPath" 
+            s3webCp "$filePath" "$destPath" "$dryRunFlag"
             errCount=$((errCount + $?))
-        done
+            gen3_log_info "errCount: $errCount"
+        done < <(find . -type f -print)
         # TODO - copy html last
+        gen3_log_info "final errCount: $errCount"
         [[ $errCount == 0 ]]
     )
 }

@@ -38,5 +38,14 @@ testS3webPublish() {
     because $? "s3web publish worked - s3://$testBucket/testData/testWeb"
 }
 
+testS3webPublishDryRun() {
+  local testBucket="bogus.s3.bucket"
+  local testFolder="${LITTLE_HOME}/lib/testData/testWeb"
+  little s3web publish "$testFolder" "s3://$testBucket/testData/testWeb" --dryrun;
+    because $? "s3web publish dryrun worked - s3://$testBucket/testData/testWeb"
+}
+
+
 shunit_runtest "testS3webContentType" "s3web,local"
 shunit_runtest "testS3webPublish" "s3web"
+shunit_runtest "testS3webPublishDryRun" "s3web,local"

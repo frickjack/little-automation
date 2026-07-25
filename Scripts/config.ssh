@@ -1,31 +1,41 @@
-Host *.domain.net:
-   ServerAliveInterval 120
+Host frickjack
+    HostName 3.129.63.0
+    Tag little-trusted:true
+    Tag ec2-instance-id:i-0XXXXXXXXXXXXXXXX
+
+Host *
+   IdentityFile ~/.ssh/id_ed25519
+   IdentitiesOnly yes
+
+Host admin.planx-pla.net
    User ubuntu
-   ForwardAgent yes
+   Tag little-trusted:true
 
 Host k8s.domain.net
-   ServerAliveInterval 120
    HostName 172.16.39.238
    User ubuntu
-   ForwardAgent yes
-   ProxyCommand ssh ubuntu@admin.domain.net nc %h %p 2> /dev/null
+   Tag little-trusted:true
+   ProxyJump admin.planx-pla.net
 
 Host proxy.domain.net
-   ServerAliveInterval 120
    HostName 172.16.128.111
    User ubuntu
-   ForwardAgent yes
-   ProxyCommand ssh ubuntu@admin.domain.net nc %h %p 2> /dev/null
+   Tag little-trusted:true
+   ProxyJump admin.planx-pla.net
 
 Host dev
-   ServerAliveInterval 120
    HostName 34.225.173.24
+   Tag little-trusted:true
    User ubuntu
-   ForwardAgent yes
 
 Host dev-k8s
-   ServerAliveInterval 120
    HostName 172.16.24.202
+   Tag little-trusted:true
    User ubuntu
+   ProxyJump dev
+
+Match tagged little-trusted:true
+   ServerAliveInterval 120
    ForwardAgent yes
-   ProxyCommand ssh dev nc %h %p 2> /dev/null
+   IdentityFile ~/.ssh/id_ed25519
+   User ec2-user
