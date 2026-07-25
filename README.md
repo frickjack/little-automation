@@ -2,7 +2,7 @@
 
 This [bLog](https://fortelabs.com/blog/para/) explains the PARA method for
 organizing information: project, area, resource, and archive.
-Our `Archive/` folder has `Completed/` and `Abandoned/` sub-folders, and the
+Our `Archives/` folder has `Completed/` and `Abandoned/` sub-folders, and the
 `Projects/` folder has `Planning/` and `Active/` sub-folders.
 
 This [bLog](https://www.divio.com/blog/documentation/) explains the 4 types of documentation: tutorials, how-to guides, explanation, and reference.  The `Notes/Areas` folder has
@@ -18,10 +18,6 @@ Projects will eventually move to the archive, so don't bookmark them.
 
 ### [areas](./Notes/Areas)
 
-### [archives](./Notes/Archives)
-
-### [resources](./Notes/Resources)
-
 #### [tutorials](./Notes/Areas/tutorial)
 
 #### [explanation](./Notes/Areas/explanation)
@@ -33,6 +29,7 @@ Projects will eventually move to the archive, so don't bookmark them.
 * [Cloudformation Patterns](./Notes/Areas/explanation/cfPatterns.md)
 * [Route53 in Cloudformation](./Notes/Areas/explanation/route53Cf.md)
 * [Jamstack in Cloudformation](./Notes/Areas/explanation/s3webCf.md)
+* [littleware gitflow flavor](./Notes/Areas/explanation/gitReleaseFlow.md)
 
 #### [how-tos](./Notes/Areas/howto)
 
@@ -43,3 +40,7 @@ Projects will eventually move to the archive, so don't bookmark them.
 
 * [Release Notes](./Notes/Areas/reference/releaseNotes.md)
 * [little commands](./Notes/Areas/reference/cli/README.md)
+
+### [archives](./Notes/Archives)
+
+### [resources](./Notes/Resources)

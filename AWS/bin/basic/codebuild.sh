@@ -46,9 +46,22 @@ tag-name() {
     echo "$tagName"
 }
 
+gh-log-filter() {
+    awk '/^commit /{ skip="true"; } /^ *$/{ skip="false"; } skip=="false"{ sub(/^ */, ""); print; }'
+}
+
+gh-pr-create() {
+   local branchName
+   branchName="$(git branch --show-current)" || return 1
+   gh pr create "$@" --title "$branchName" --base dev --body-file - <<EOM
+## Overview
+
+$(git --no-pager log --reverse origin/dev..HEAD | gh-log-filter)
+EOM
+}
 
 if [[ $# -lt 1 ]]; then
-    little helper codebuild
+    little help codebuild
 fi
 
 "$@"

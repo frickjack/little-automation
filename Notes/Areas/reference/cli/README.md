@@ -91,6 +91,9 @@ little profiles
 
 Setup an AWS account to run `cloudformation`.
 
+* [codebuild](./codebuild.md)
+
+Code-build and git-flow helpers.
 
 * [lambda](./lambda.md)
 

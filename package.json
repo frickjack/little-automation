@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/frickjack/little-automation#readme",
   "dependencies": {
-    "jasmine": "^3.5.0"
+    "jasmine": "^6.3.0"
   },
   "devDependencies": {
     "marked": "latest",
