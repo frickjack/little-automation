@@ -32,7 +32,7 @@ littleCommandType() {
         return 0
       fi
     done
-    if which "$command" > /dev/null 2>&1; then
+    if which "$command" > /dev/null 2>&1 || [[ -x "$command" ]]; then
       echo "not-little" "xx"
       return 0
     fi
