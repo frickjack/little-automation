@@ -52,7 +52,20 @@ s3webPath2ContentType() {
         *.mp3)
             echo "audio/mpeg"
             ;;
+        *.woff2)
+            echo "font/woff2"
+            ;;
+        *.eot)
+            echo "application/vnd.ms-fontobject"
+            ;;
+        *.ttf)
+            echo "font/ttf"
+            ;;
+        *.woff)
+            echo "font/woff"
+            ;;
         *)
+            gen3_log_warn "unknown file-extension - defaulting to text/plain: $path"
             echo "text/plain; charset=utf-8"
             ;;
     esac
