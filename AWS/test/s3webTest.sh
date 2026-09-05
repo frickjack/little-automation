@@ -20,6 +20,10 @@ testS3webContentType() {
     txt "text/plain; charset=utf-8"
     mjs "application/javascript; charset=utf-8"
     mp3 "audio/mpeg"
+    woff2 "font/woff2"
+    eot "application/vnd.ms-fontobject"
+    ttf "font/ttf"
+    woff "font/woff"
   )
   local testCount=${#testList[@]}
   for ((it=0; it < testCount-1; it=it+2)); do
